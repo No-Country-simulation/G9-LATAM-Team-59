@@ -1,4 +1,5 @@
 G9-LATAM-Team-59
+
 Proyecto 2: FinanceAI – Asistente Inteligente de Salud Financiera
 
 Crear una solución inteligente capaz de analizar el comportamiento financiero de un
