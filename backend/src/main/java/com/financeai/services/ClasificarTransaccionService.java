@@ -15,7 +15,9 @@ public class ClasificarTransaccionService {
     public ClasificarTransaccionService(FinanceAiModelAdapter modelAdapter) {
         this.modelAdapter = modelAdapter;
     }
-
+    /*
+    TODO: Necesito especificar si necesito clasificar una transaccion o un conjunto de transacciones.
+    */
     public RespuestaClasificarTransaccionesDTO clasificarTransacciones(SolicitudClasificarTransaccionesDTO dto) {
         Map<String, Object> requestData = new HashMap<>();
         requestData.put("transacciones", dto.getTransacciones());
