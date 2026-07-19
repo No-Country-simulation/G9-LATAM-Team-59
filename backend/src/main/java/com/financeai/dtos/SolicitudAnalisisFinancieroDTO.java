@@ -21,7 +21,7 @@ public class SolicitudAnalisisFinancieroDTO {
 
     @NotEmpty
     @Valid
-    private List<SolicitudClasificarTransaccionesDTO> transacciones;
+    private List<TransaccionDTO> transacciones;
 
     public Double getIngreso_mensual() { return ingreso_mensual; }
     public void setIngreso_mensual(Double ingreso_mensual) { this.ingreso_mensual = ingreso_mensual; }
@@ -32,7 +32,7 @@ public class SolicitudAnalisisFinancieroDTO {
     public String getFrecuencia_ahorro() { return frecuencia_ahorro; }
     public void setFrecuencia_ahorro(String frecuencia_ahorro) { this.frecuencia_ahorro = frecuencia_ahorro; }
 
-    public List<SolicitudClasificarTransaccionesDTO> getTransacciones() { return transacciones; }
-    public void setTransacciones(List<SolicitudClasificarTransaccionesDTO> transacciones) { this.transacciones = transacciones; }
+    public List<TransaccionDTO> getTransacciones() { return transacciones; }
+    public void setTransacciones(List<TransaccionDTO> transacciones) { this.transacciones = transacciones; }
 
 }
