@@ -1,4 +1,38 @@
 package com.financeai.dtos;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import java.util.List;
+
 public class SolicitudAnalisisFinancieroDTO {
+
+    @NotNull
+    @PositiveOrZero
+    private Double ingreso_mensual;
+
+    @NotNull
+    @Min(0)
+    @Max(100)
+    private Double nivel_endeudamiento;
+
+    @NotBlank
+    @Pattern(regexp = "Nula|Baja|Media|Alta")
+    private String frecuencia_ahorro;
+
+    @NotEmpty
+    @Valid
+    private List<SolicitudClasificarTransaccionesDTO> transacciones;
+
+    public Double getIngreso_mensual() { return ingreso_mensual; }
+    public void setIngreso_mensual(Double ingreso_mensual) { this.ingreso_mensual = ingreso_mensual; }
+
+    public Double getNivel_endeudamiento() { return nivel_endeudamiento; }
+    public void setNivel_endeudamiento(Double nivel_endeudamiento) { this.nivel_endeudamiento = nivel_endeudamiento; }
+
+    public String getFrecuencia_ahorro() { return frecuencia_ahorro; }
+    public void setFrecuencia_ahorro(String frecuencia_ahorro) { this.frecuencia_ahorro = frecuencia_ahorro; }
+
+    public List<SolicitudClasificarTransaccionesDTO> getTransacciones() { return transacciones; }
+    public void setTransacciones(List<SolicitudClasificarTransaccionesDTO> transacciones) { this.transacciones = transacciones; }
+
 }
