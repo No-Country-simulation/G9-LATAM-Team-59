@@ -1,24 +1,22 @@
 package com.financeai.dtos;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import java.util.List;
+import java.util.Map;
 
 public class SolicitudClasificarTransaccionesDTO {
 
-    @NotBlank(message = "La descripción no puede estar vacía")
-    @Size(min = 3, max = 100, message = "La descripción debe tener entre 3 y 100 caracteres")
-    private String descripcion;
+    @NotEmpty
+    @Valid
+    private List<TransaccionDTO> transacciones;
 
-    @NotNull(message = "El valor no puede ser nulo")
-    @Positive(message = "El valor debe ser mayor a cero")
-    private Double valor;
+    private Map<String, Object> informacionAdicional;
 
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    public List<TransaccionDTO> getTransacciones() { return transacciones; }
+    public void setTransacciones(List<TransaccionDTO> transacciones) { this.transacciones = transacciones; }
 
-    public Double getValor() { return valor; }
-    public void setValor(Double valor) { this.valor = valor; }
+    public Map<String, Object> getInformacionAdicional() { return informacionAdicional; }
+    public void setInformacionAdicional(Map<String, Object> informacionAdicional) { this.informacionAdicional = informacionAdicional; }
 
 }
