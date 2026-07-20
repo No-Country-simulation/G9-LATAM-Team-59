@@ -3,6 +3,7 @@ package com.financeai.dtos;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
+import java.util.Map;
 
 public class SolicitudAnalisisFinancieroDTO {
 
@@ -23,6 +24,8 @@ public class SolicitudAnalisisFinancieroDTO {
     @Valid
     private List<TransaccionDTO> transacciones;
 
+    private Map<String, Object> informacionAdicional;
+
     public Double getIngreso_mensual() { return ingreso_mensual; }
     public void setIngreso_mensual(Double ingreso_mensual) { this.ingreso_mensual = ingreso_mensual; }
 
@@ -34,5 +37,8 @@ public class SolicitudAnalisisFinancieroDTO {
 
     public List<TransaccionDTO> getTransacciones() { return transacciones; }
     public void setTransacciones(List<TransaccionDTO> transacciones) { this.transacciones = transacciones; }
+
+    public Map<String, Object> getInformacionAdicional() { return informacionAdicional; }
+    public void setInformacionAdicional(Map<String, Object> informacionAdicional) { this.informacionAdicional = informacionAdicional; }
 
 }
