@@ -14,11 +14,12 @@ public class RespuestaAnalisisFinancieroDTO {
     public RespuestaAnalisisFinancieroDTO() {}
 
     public RespuestaAnalisisFinancieroDTO(String perfil_financiero, Double probabilidad,
-                                          Map<String, Double> resumen_gastos, String recomendaciones) {
+                                          Map<String, Double> resumen_gastos, String recomendaciones,String analisis) {
         this.perfil_financiero = perfil_financiero;
         this.probabilidad = probabilidad;
         this.resumen_gastos = resumen_gastos;
         this.recomendaciones = recomendaciones;
+        this.analisis = analisis;
     }
 
     public String getPerfil_financiero() { return perfil_financiero; }
