@@ -8,12 +8,13 @@ public class RespuestaAnalisisFinancieroDTO {
     private String perfil_financiero;
     private Double probabilidad;
     private Map<String, Double> resumen_gastos;
-    private List<String> recomendaciones;
+    private String recomendaciones;
+    private String analisis;
 
     public RespuestaAnalisisFinancieroDTO() {}
 
     public RespuestaAnalisisFinancieroDTO(String perfil_financiero, Double probabilidad,
-                                          Map<String, Double> resumen_gastos, List<String> recomendaciones) {
+                                          Map<String, Double> resumen_gastos, String recomendaciones) {
         this.perfil_financiero = perfil_financiero;
         this.probabilidad = probabilidad;
         this.resumen_gastos = resumen_gastos;
@@ -29,7 +30,10 @@ public class RespuestaAnalisisFinancieroDTO {
     public Map<String, Double> getResumen_gastos() { return resumen_gastos; }
     public void setResumen_gastos(Map<String, Double> resumen_gastos) { this.resumen_gastos = resumen_gastos; }
 
-    public List<String> getRecomendaciones() { return recomendaciones; }
-    public void setRecomendaciones(List<String> recomendaciones) { this.recomendaciones = recomendaciones; }
+    public String getRecomendaciones() { return recomendaciones; }
+    public void setRecomendaciones(String recomendaciones) { this.recomendaciones = recomendaciones; }
+
+    public String getAnalisis() { return analisis; }
+    public void setAnalisis(String analisis) { this.analisis = analisis; }
 
 }
