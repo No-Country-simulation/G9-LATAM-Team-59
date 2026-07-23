@@ -7,4 +7,6 @@ import com.financeai.models.Usuario;
 
 public interface UserRepository extends JpaRepository<Usuario, Long> {
     UserDetails findByEmail(String email);
+    boolean existsByEmail(String email);
+    boolean existsByUsername(String username);
 }
