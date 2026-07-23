@@ -22,6 +22,6 @@ public class ClasificarTransaccionController {
     public ResponseEntity<?> clasificarTransacciones(@RequestBody SolicitudClasificarTransaccionesDTO dto) {
         RespuestaClasificarTransaccionesDTO dtoRespuesta = service.clasificarTransacciones(dto);
         
-        return dtoRespuesta;
+        return ResponseEntity.ok(dtoRespuesta);
     }
 }

@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.financeai.dtos.RespuestaAnalisisFinancieroDTO;
+import com.financeai.dtos.SolicitudAnalisisFinancieroDTO;
 import com.financeai.integrations.FinanceAiModelAdapter;
 
 @Service
@@ -18,11 +20,13 @@ public class AnalisisFinancieroService {
     public RespuestaAnalisisFinancieroDTO clasificarTransacciones(SolicitudAnalisisFinancieroDTO dto) {
         validarSolicitud(dto);
 
-        Map<String, Object> respuesta = new HashMap<>();
-        respuesta.put("transacciones", dto.getTransacciones());
-        respuesta.put("recomendaciones", dto.getInformacionAdicional());
+        Map<String, Object> solicitud = new HashMap<>();
+        solicitud.put("ingreso_mensual", dto.getIngreso_mensual());
+        solicitud.put("frecuencia_ahorro", dto.getFrecuencia_ahorro());
+        solicitud.put("nivel_endeudamiento", dto.getNivel_endeudamiento());
+        solicitud.put("transacciones", dto.getTransacciones());
 
-        Map<String, Object> modelResponse = modelAdapter.conectarModeloFinanceAI("/analisis", respuesta, Map.class);
+        Map<String, Object> modelResponse = modelAdapter.conectarModeloFinanceAI("/analisis", solicitud, Map.class);
 
         RespuestaAnalisisFinancieroDTO dtoRespuesta = new RespuestaAnalisisFinancieroDTO();
         dtoRespuesta.setAnalisis((String) modelResponse.get("analisis"));
