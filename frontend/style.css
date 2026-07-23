@@ -1,0 +1,95 @@
+body {
+  background: #fff9e6;
+  color: #343a40;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.nav {
+  background-color: darkgoldenrod;
+  padding: 0.75rem 1rem;
+}
+
+.nav-link {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: white !important;
+  text-decoration: none !important;
+  font-weight: 600;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: bisque !important;
+}
+
+.carousel {
+  max-height: 420px;
+  overflow: hidden;
+}
+
+.carousel-item img {
+  height: 340px;
+  object-fit: cover;
+}
+
+.form-section {
+  background: rgba(255, 249, 230, 0.95);
+  border: 1px solid rgba(184, 134, 11, 0.2);
+}
+
+.btn-theme {
+  background-color: darkgoldenrod;
+  color: white;
+  border-color: darkgoldenrod;
+}
+
+.btn-theme:hover,
+.btn-theme:focus {
+  background-color: goldenrod;
+  border-color: goldenrod;
+  color: white;
+}
+
+.btn-outline-theme {
+  background: transparent;
+  color: darkgoldenrod;
+  border-color: darkgoldenrod;
+}
+
+.btn-outline-theme:hover,
+.btn-outline-theme:focus {
+  background: rgba(184, 134, 11, 0.12);
+  color: darkgoldenrod;
+}
+
+.card-theme {
+  border: 1px solid darkgoldenrod !important;
+}
+
+.clickable-card {
+  cursor: pointer;
+}
+
+.card-theme .card-title {
+  color: darkgoldenrod;
+}
+
+h2,
+h4 {
+  color: #2f2f2f;
+}
+
+textarea.form-control {
+  min-height: 140px;
+}
+
+input.form-control,
+select.form-select,
+textarea.form-control {
+  border-radius: 0.5rem;
+}
+
+.result-box {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.75rem;
+}

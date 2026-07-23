@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartWallet</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <nav class="nav">
+      <a class="nav-link" href="index.html">SMART WALLET</a>
+      <a class="nav-link" href="clasificacion.html"
+        >Clasificación de transacciones</a
+      >
+      <a class="nav-link" href="analisis.html">Análisis financiero</a>
+    </nav>
+
+    <div class="container py-5">
+      <header class="mb-5 text-center">
+        <h2 class="display-6">Análisis Financiero</h2>
+      </header>
+
+      <div class="border rounded-4 shadow-sm p-4 mb-4 form-section">
+        <h4 class="mb-3">Datos financieros</h4>
+        <label class="form-label">Ingreso mensual</label>
+        <input
+          type="number"
+          id="ingreso"
+          class="form-control form-control-sm mb-3 numeric-only"
+          inputmode="numeric"
+          pattern="[0-9]*"
+        />
+
+        <label class="form-label">Nivel de endeudamiento (%)</label>
+        <input
+          type="number"
+          id="endeudamiento"
+          class="form-control form-control-sm mb-3 numeric-only"
+          inputmode="numeric"
+          pattern="[0-9]*"
+        />
+
+        <label class="form-label">Frecuencia de ahorro</label>
+        <select id="ahorro" class="form-select form-select-sm mb-3">
+          <option>Nula</option>
+          <option>Baja</option>
+          <option>Media</option>
+          <option>Alta</option>
+        </select>
+      </div>
+
+      <div class="border rounded-4 shadow-sm p-4 mb-4 form-section">
+        <h4 class="mb-3">Transacciones</h4>
+        <div id="transaccionesAnalisis">
+          <div class="transaccion-analisis mb-3">
+            <label class="form-label">Descripción de la transacción</label>
+            <input
+              type="text"
+              class="descripcion-analisis form-control form-control-sm mb-3"
+            />
+
+            <label class="form-label">Valor</label>
+            <input
+              type="number"
+              class="valor-analisis form-control form-control-sm mb-3 numeric-only"
+              inputmode="numeric"
+              pattern="[0-9]*"
+            />
+            <hr />
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="btn btn-theme btn-sm"
+            onclick="agregarTransaccionAnalisis()"
+          >
+            Agregar transacción
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-theme btn-sm"
+            onclick="eliminarTransaccionAnalisis()"
+          >
+            Eliminar transacción
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-theme btn-sm"
+            onclick="resetAnalisisForm()"
+          >
+            Limpiar formulario
+          </button>
+          <button
+            type="button"
+            class="btn btn-theme btn-sm"
+            onclick="cargarDatosPruebaAnalisis()"
+          >
+            Cargar datos de prueba
+          </button>
+          <button
+            type="button"
+            class="btn btn-theme btn-sm"
+            onclick="enviarDatos()"
+          >
+            Analizar mis finanzas
+          </button>
+        </div>
+      </div>
+
+      <div class="border rounded-4 shadow-sm p-4 mb-4 form-section mt-4">
+        <h4 class="mb-3">JSON puro</h4>
+        <label class="form-label">Editar / enviar directamente</label>
+        <textarea
+          id="jsonPuroAnalisis"
+          placeholder='{
+  "ingreso_mensual": 4500.00,
+  "nivel_endeudamiento": 25.0,
+  "frecuencia_ahorro": "Media",
+  "transacciones": [
+    {"descripcion": "Supermercado Carrefour", "valor": 420.00},
+    {"descripcion": "Carga de nafta YPF", "valor": 300.00},
+    {"descripcion": "Suscripción Netflix", "valor": 40.00}
+  ]
+}'
+          rows="8"
+          class="form-control"
+          style="min-height: 140px; resize: vertical"
+          oninput="autoResize(this)"
+        ></textarea>
+
+        <div class="mt-3 d-flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="btn btn-theme btn-sm"
+            onclick="cargarDatosPruebaJSONAnalisis()"
+          >
+            Cargar datos de prueba
+          </button>
+          <button
+            type="button"
+            class="btn btn-theme btn-sm"
+            onclick="enviarJSONPuroAnalisis()"
+          >
+            Enviar
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-theme btn-sm"
+            onclick="resetJSONPuroAnalisis()"
+          >
+            Limpiar
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="resultadoAnalisis"
+        class="border rounded-4 shadow-sm p-4 form-section mt-4"
+        style="white-space: pre-wrap; display: none"
+      >
+        <h4 class="mb-3">Resultado</h4>
+        <div
+          class="p-3 rounded-3 bg-light shadow-sm"
+          style="white-space: pre-wrap"
+        ></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
