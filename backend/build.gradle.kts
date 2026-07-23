@@ -22,7 +22,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	
 	implementation("org.springframework.boot:spring-boot-starter-security")
+
 	runtimeOnly("org.xerial:sqlite-jdbc")
+	implementation("org.hibernate.orm:hibernate-community-dialects:7.4.4.Final")
+
   	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")

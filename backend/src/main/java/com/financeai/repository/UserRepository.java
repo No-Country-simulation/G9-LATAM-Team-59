@@ -6,9 +6,5 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.financeai.models.Usuario;
 
 public interface UserRepository extends JpaRepository<Usuario, Long> {
-    static UserDetails findByEmail(String email) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findByEmail'");
-        
-    }
+    UserDetails findByEmail(String email);
 }
