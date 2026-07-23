@@ -22,6 +22,6 @@ public class AnalisisFinancieroController {
     public ResponseEntity<?> clasificarTransacciones(@RequestBody SolicitudAnalisisFinancieroDTO dto) {
         RespuestaAnalisisFinancieroDTO dtoRespuesta = service.clasificarTransacciones(dto);
         
-        return dtoRespuesta;
+        return ResponseEntity.ok(dtoRespuesta);
     }
 }
