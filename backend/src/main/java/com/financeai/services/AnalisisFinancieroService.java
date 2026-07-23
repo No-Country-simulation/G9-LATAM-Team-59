@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.financeai.dtos.RespuestaAnalisisFinancieroDTO;
-import com.financeai.dtos.SolicitudAnalisisFinancieroDTO;
 import com.financeai.integrations.FinanceAiModelAdapter;
 
 @Service
