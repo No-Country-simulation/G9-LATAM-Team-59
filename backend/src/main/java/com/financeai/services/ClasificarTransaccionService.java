@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.financeai.dtos.RespuestaClasificarTransaccionesDTO;
+import com.financeai.dtos.SolicitudClasificarTransaccionesDTO;
 import com.financeai.integrations.FinanceAiModelAdapter;
 
 @Service
@@ -19,16 +21,14 @@ public class ClasificarTransaccionService {
     TODO: Necesito especificar si necesito clasificar una transaccion o un conjunto de transacciones.
     */
     public RespuestaClasificarTransaccionesDTO clasificarTransacciones(SolicitudClasificarTransaccionesDTO dto) {
-        Map<String, Object> requestData = new HashMap<>();
-        requestData.put("transacciones", dto.getTransacciones());
-        requestData.put("informacion_adicional", dto.getInformacionAdicional());
+        Map<String, Object> solicitud = new HashMap<>();
+        solicitud.put("transacciones", dto.getTransacciones());
 
-        Map<String, Object> modelResponse = modelAdapter.clasificarTransacciones(requestData);
+        Map<String, Object> modelResponse = modelAdapter.conectarModeloFinanceAI("/clasificacion", solicitud, Map.class);
 
         RespuestaClasificarTransaccionesDTO respuesta = new RespuestaClasificarTransaccionesDTO();
         respuesta.setClasificaciones((Map<String, String>) modelResponse.get("clasificaciones"));
-        respuesta.setInformacionAdicional((Map<String, Object>) modelResponse.get("informacion_adicional"));
-
+        
         return respuesta;
     }
 }
