@@ -3,7 +3,6 @@ package com.financeai.dtos;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
-import java.util.Map;
 
 public class SolicitudAnalisisFinancieroDTO {
 

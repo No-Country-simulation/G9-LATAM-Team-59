@@ -1,6 +1,5 @@
 package com.financeai.dtos;
 
-import java.util.List;
 import java.util.Map;
 
 public class RespuestaAnalisisFinancieroDTO {
