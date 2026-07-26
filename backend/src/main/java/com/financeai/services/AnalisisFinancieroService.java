@@ -27,6 +27,7 @@ public class AnalisisFinancieroService {
         solicitud.put("transacciones", dto.getTransacciones());
 
         // Map<String, Object> modelResponse = modelAdapter.conectarModeloFinanceAI("/analisis", solicitud, Map.class);
+        Map<String, Object> modelResponse = modelAdapter.conectarModeloFinanceAI("/analisis", solicitud, Map.class);
 
         // RespuestaAnalisisFinancieroDTO dtoRespuesta = new RespuestaAnalisisFinancieroDTO();
         // dtoRespuesta.setAnalisis((String) modelResponse.get("analisis"));
