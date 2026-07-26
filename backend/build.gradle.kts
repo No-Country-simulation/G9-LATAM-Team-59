@@ -20,6 +20,19 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
+	
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
+	runtimeOnly("org.xerial:sqlite-jdbc")
+	implementation("org.hibernate.orm:hibernate-community-dialects:7.4.4.Final")
+
+  	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+  	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0")
+	implementation("io.jsonwebtoken:jjwt-api:0.13.0")
+	
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
