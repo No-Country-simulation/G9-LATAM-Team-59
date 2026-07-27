@@ -31,34 +31,81 @@ El MVP se enfoca en un flujo simple de extremo a extremo:
 
 ## 🏗️ Arquitectura general
 
-| Capa | Tecnología | Función |
-|------|------------|---------|
-| 🖥️ **Frontend** | Interfaz simple | Ingreso de datos y visualización de resultados. |
-| ⚙️ **Backend** | Spring Boot (API REST) | Recepción, validación y orquestación del flujo. |
-| 🧠 **Ciencia de Datos** | Python | Clasificación de transacciones y predicción de perfil financiero. |
-| ☁️ **OCI** | Oracle Cloud Infrastructure | Despliegue y/o almacenamiento en la nube. |
+| Capa　　　　　　　　　　| Tecnología                  | Función                                                           |
+| -------------------------| -----------------------------| -------------------------------------------------------------------|
+| 🖥️ **Frontend**　　　　 | Interfaz simple             | Ingreso de datos y visualización de resultados.                   |
+| ⚙️ **Backend**　　　　　 | Spring Boot (API REST)      | Recepción, validación y orquestación del flujo.                   |
+| 🧠 **Ciencia de Datos** | Python                      | Clasificación de transacciones y predicción de perfil financiero. |
+| ☁️ **OCI**　　　　　　　 | Oracle Cloud Infrastructure | Despliegue y/o almacenamiento en la nube.                         |
 
 ---
 
-## 📌 Endpoints (backend)
+## 📌 Endpoints (Backend)
 
-### 🔹 Clasificación de transacciones
-
-- **Método:** `POST`  
-- **Ruta:** `/api/clasificar-transacciones`  
-- **Descripción:** Recibe un conjunto de transacciones y devuelve la categoría financiera correspondiente.
+### 🔹 Registro de Cuenta
+- **Método:** `POST`
+- **Ruta:** `/api/auth/registrar-cuenta`
+- **Autenticación:** Pública (No requiere token)
+- **Descripción:** Registra un nuevo usuario en la plataforma validando la unicidad del correo electrónico y nombre de usuario.
 
 ---
 
-### 🔹 Análisis financiero
+### 🔹 Iniciar Sesión
+- **Método:** `POST`
+- **Ruta:** `/api/auth/login`
+- **Autenticación:** Pública (No requiere token)
+- **Descripción:** Autentica a un usuario registrado mediante sus credenciales y genera un token JWT para sesiones protegidas.
 
-- **Método:** `POST`  
-- **Ruta:** `/api/analisis-financiero`  
-- **Descripción:** Recibe datos financieros del usuario, procesa la información y devuelve:
-  - Perfil financiero
-  - Probabilidad
-  - Resumen de gastos
-  - Recomendaciones personalizadas
+---
+
+### 🔹 Clasificación de Transacciones
+- **Método:** `POST`
+- **Ruta:** `/api/clasificar-transacciones`
+- **Autenticación:** Pública (No requiere token)
+- **Descripción:** Recibe un conjunto de transacciones y devuelve el monto total agrupado por categoría financiera.
+
+---
+
+### 🔹 Análisis Financiero (Puntual)
+- **Método:** `POST`
+- **Ruta:** `/api/analisis-financiero`
+- **Autenticación:** Pública (No requiere token)
+- **Descripción:** Evalúa la salud financiera del usuario según su ingreso, nivel de endeudamiento, ahorro y transacciones enviadas en la petición.
+
+---
+
+### 🔹 Análisis Financiero Histórico
+- **Método:** `POST`
+- **Ruta:** `/api/analisis-financiero/mis-transacciones`
+- **Autenticación:** Protegida (`Authorization: Bearer <token>`)
+- **Descripción:** Evalúa el perfil financiero utilizando las transacciones almacenadas históricamente en el perfil del usuario autenticado (soporta filtro por fechas).
+
+---
+
+### 🔹 Registrar Transacción
+- **Método:** `POST`
+- **Ruta:** `/api/transacciones`
+- **Autenticación:** Protegida (`Authorization: Bearer <token>`)
+- **Descripción:** Invoca automáticamente la clasificación por IA para asignar la categoría correspondiente y almacena la transacción en el historial del usuario.
+
+---
+
+### 🔹 Ver Transacciones (con filtro)
+- **Método:** `GET`
+- **Ruta:** `/api/transacciones?desde={fecha}&hasta={fecha}`
+- **Autenticación:** Protegida (`Authorization: Bearer <token>`)
+- **Descripción:** Devuelve el listado de transacciones registradas del usuario autenticado, con filtro opcional por rango de fechas.
+
+---
+
+### 🔹 Eliminar Transacción
+- **Método:** `DELETE`
+- **Ruta:** `/api/transacciones/{id}`
+- **Autenticación:** Protegida (`Authorization: Bearer <token>`)
+- **Descripción:** Elimina del sistema una transacción registrada del usuario autenticado a partir de su ID.
+
+---
+
 
 ## 🚀 Guía de ejecución Backend (desde cero)
 
