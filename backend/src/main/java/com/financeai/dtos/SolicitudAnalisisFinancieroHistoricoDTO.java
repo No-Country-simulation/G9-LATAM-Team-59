@@ -1,12 +1,11 @@
 package com.financeai.dtos;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +25,7 @@ public class SolicitudAnalisisFinancieroHistoricoDTO {
     @Pattern(regexp = "Nula|Baja|Media|Alta")
     private String frecuenciaAhorro;
 
-    @NotEmpty
-    @Valid
-    private List<TransaccionDTO> transacciones;
+    private LocalDate fechaInicioPeriodo;
+
+    private LocalDate fechaFinPeriodo;
 }
