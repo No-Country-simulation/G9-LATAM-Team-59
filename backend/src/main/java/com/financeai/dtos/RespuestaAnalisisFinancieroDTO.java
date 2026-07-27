@@ -19,7 +19,7 @@ import lombok.Setter;
 public class RespuestaAnalisisFinancieroDTO {
 
     private String perfilFinanciero;
-    private Double probabilidad;
+    private Map<String, Double> probabilidad;
     private Map<String, Double> resumenGastos;
     private String recomendaciones;
 
