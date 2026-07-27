@@ -26,10 +26,9 @@ public class ClasificarTransaccionController {
         
         RespuestaClasificarTransaccionesDTO dtoRespuesta = new RespuestaClasificarTransaccionesDTO();
         dtoRespuesta.setClasificaciones(Map.of(
-            "Supermercado Coto", "Alimentación",
-            "Pago Netflix", "Entretenimiento",
-            "Estación de Servicio YPF", "Transporte",
-            "Farmacia Dr. Ahorro", "Salud"
+            "Alimentación", 1000.2,
+            "Entretenimiento", 900.0,
+            "Transporte", 2000.0
         ));
         
         return ResponseEntity.ok(dtoRespuesta);
