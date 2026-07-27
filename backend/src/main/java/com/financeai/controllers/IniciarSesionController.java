@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.financeai.dtos.LoginRequestDto;
-import com.financeai.dtos.TokenResponseDto;
+import com.financeai.dtos.LoginRequestDTO;
+import com.financeai.dtos.TokenResponseDTO;
 import com.financeai.services.IniciarSesionService;
 
 import jakarta.validation.Valid;
@@ -21,9 +21,9 @@ public class IniciarSesionController {
     private final IniciarSesionService service;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDto loginRequest) {
+    public ResponseEntity<?> login(@RequestBody @Valid LoginRequestDTO loginRequest) {
         
-        TokenResponseDto tokenResponseDto = service.iniciarSesion(loginRequest);
+        TokenResponseDTO tokenResponseDto = service.iniciarSesion(loginRequest);
         return ResponseEntity.ok(tokenResponseDto);
 
     }
