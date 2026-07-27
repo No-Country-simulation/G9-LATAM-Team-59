@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.financeai.config.exceptions.ExcepcionContrasenaIncorrecta;
+import com.financeai.config.exceptions.ExcepcionCorreoIncorrecto;
 import com.financeai.dtos.LoginRequestDto;
 import com.financeai.dtos.TokenResponseDto;
 import com.financeai.models.Usuario;
@@ -29,10 +31,10 @@ public class IniciarSesionService {
     public TokenResponseDto iniciarSesion (LoginRequestDto dto) {
 
         Usuario usuario = userRepository.findByEmail(dto.email())
-                .orElseThrow(() -> new RuntimeException());
+                .orElseThrow(() -> new ExcepcionCorreoIncorrecto());
 
         if(!passwordEncoder.matches(dto.password(), usuario.getPassword())) 
-            throw new RuntimeException();
+            throw new ExcepcionContrasenaIncorrecta();
         
         String token = Jwts.builder()
             .subject(usuario.getEmail())

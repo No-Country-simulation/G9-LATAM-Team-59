@@ -3,6 +3,8 @@ package com.financeai.services;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.financeai.config.exceptions.ExcepcionEmailDuplicado;
+import com.financeai.config.exceptions.ExcepcionNombreUsuarioDuplicado;
 import com.financeai.dtos.UsuarioDto;
 import com.financeai.models.Usuario;
 import com.financeai.repository.UserRepository;
@@ -19,11 +21,11 @@ public class RegistrarCuentaService {
     public void registrarCuenta(UsuarioDto usuario) {
         
         if (userRepository.existsByEmail(usuario.email())) {
-            throw new RuntimeException();
+            throw new ExcepcionEmailDuplicado(usuario.email());
         }
 
         if (userRepository.existsByUsername(usuario.userName())) {
-            throw new RuntimeException();
+            throw new ExcepcionNombreUsuarioDuplicado(usuario.userName());
         }
         
         Usuario newUser = new Usuario();

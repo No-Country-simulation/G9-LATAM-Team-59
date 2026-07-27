@@ -2,6 +2,7 @@ package com.financeai.services;
 
 import com.financeai.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.financeai.config.exceptions.ExcepcionEntidadNoEncontrada;
 import com.financeai.dtos.RespuestaAnalisisFinancieroDTO;
 import com.financeai.dtos.SolicitudAnalisisFinancieroDTO;
 import com.financeai.dtos.SolicitudAnalisisFinancieroHistoricoDTO;
@@ -77,9 +79,14 @@ public class AnalisisFinancieroService {
     
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        if (usuario == null) throw new ExcepcionEntidadNoEncontrada("Usuario");
+
+        userRepository.findById(usuario.getId())
+                .orElseThrow(() -> new ExcepcionEntidadNoEncontrada("Usuario"));
+
         String username = usuario.getUsername();
 
-        List<Transaccion> transacciones;
+        List<Transaccion> transacciones = new ArrayList<>();
 
         if (dto.getFechaFinPeriodo() == null && dto.getFechaFinPeriodo() == null) {
             
