@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.financeai.config.exceptions.ExcepcionContrasenaIncorrecta;
 import com.financeai.config.exceptions.ExcepcionCorreoIncorrecto;
-import com.financeai.dtos.LoginRequestDto;
-import com.financeai.dtos.TokenResponseDto;
+import com.financeai.dtos.LoginRequestDTO;
+import com.financeai.dtos.TokenResponseDTO;
 import com.financeai.models.Usuario;
 import com.financeai.repository.UserRepository;
 
@@ -28,7 +28,7 @@ public class IniciarSesionService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public TokenResponseDto iniciarSesion (LoginRequestDto dto) {
+    public TokenResponseDTO iniciarSesion (LoginRequestDTO dto) {
 
         Usuario usuario = userRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new ExcepcionCorreoIncorrecto());
@@ -44,7 +44,7 @@ public class IniciarSesionService {
             .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
             .compact();
         
-        return new TokenResponseDto(token);
+        return new TokenResponseDTO(token);
 
     }
 }
