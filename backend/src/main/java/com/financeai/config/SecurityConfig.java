@@ -33,6 +33,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/analisis-financiero").permitAll()
+                .requestMatchers("/api/clasificar-transacciones").permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
