@@ -1,40 +1,26 @@
 package com.financeai.dtos;
 
-import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Setter
 public class RespuestaAnalisisFinancieroDTO {
 
-    private String perfil_financiero;
-    private Double probabilidad;
-    private Map<String, Double> resumen_gastos;
+    private String perfilFinanciero;
+    private Map<String, Double> probabilidad;
+    private Map<String, Double> resumenGastos;
     private String recomendaciones;
-    private String analisis;
-
-    public RespuestaAnalisisFinancieroDTO() {}
-
-    public RespuestaAnalisisFinancieroDTO(String perfil_financiero, Double probabilidad,
-                                          Map<String, Double> resumen_gastos, String recomendaciones,String analisis) {
-        this.perfil_financiero = perfil_financiero;
-        this.probabilidad = probabilidad;
-        this.resumen_gastos = resumen_gastos;
-        this.recomendaciones = recomendaciones;
-        this.analisis = analisis;
-    }
-
-    public String getPerfil_financiero() { return perfil_financiero; }
-    public void setPerfil_financiero(String perfil_financiero) { this.perfil_financiero = perfil_financiero; }
-
-    public Double getProbabilidad() { return probabilidad; }
-    public void setProbabilidad(Double probabilidad) { this.probabilidad = probabilidad; }
-
-    public Map<String, Double> getResumen_gastos() { return resumen_gastos; }
-    public void setResumen_gastos(Map<String, Double> resumen_gastos) { this.resumen_gastos = resumen_gastos; }
-
-    public String getRecomendaciones() { return recomendaciones; }
-    public void setRecomendaciones(String recomendaciones) { this.recomendaciones = recomendaciones; }
-
-    public String getAnalisis() { return analisis; }
-    public void setAnalisis(String analisis) { this.analisis = analisis; }
 
 }

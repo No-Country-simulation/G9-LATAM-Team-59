@@ -21,8 +21,8 @@ public class AnalisisFinancieroController {
     private final AnalisisFinancieroService service;
 
     @PostMapping
-    public ResponseEntity<?> clasificarTransacciones(@RequestBody SolicitudAnalisisFinancieroDTO dto) {
-        // RespuestaAnalisisFinancieroDTO dtoRespuesta = service.clasificarTransacciones(dto);
+    public ResponseEntity<?> realizarAnalisisFinanciero(@RequestBody SolicitudAnalisisFinancieroDTO dto) {
+        // RespuestaAnalisisFinancieroDTO dtoRespuesta = service.realizarAnalisisFinanciero(dto);
         Map<String, Double> resumenGastos = Map.of(
             "Alimentación", 35000.0,
             "Servicios", 15000.0,
@@ -32,10 +32,29 @@ public class AnalisisFinancieroController {
 
         RespuestaAnalisisFinancieroDTO dtoRespuesta = new RespuestaAnalisisFinancieroDTO(
             "Moderado",
-            0.85,
+            Map.of("Saludable", 0.85, "Peligro", 0.15),
             resumenGastos,
-            "Se sugiere reducir los gastos en entretenimiento y aumentar la reserva de ahorro.",
-            "El análisis indica un comportamiento financiero equilibrado con oportunidades de optimización en gastos secundarios."
+            "Se sugiere reducir los gastos en entretenimiento y aumentar la reserva de ahorro."
+        );
+
+        return ResponseEntity.ok(dtoRespuesta);
+    }
+
+    @PostMapping("/mis-transacciones")
+    public ResponseEntity<?> realizarAnalisisFinancieroHistorico(@RequestBody SolicitudAnalisisFinancieroHistoricoDTO dto) {
+        // RespuestaAnalisisFinancieroDTO dtoRespuesta = service.realizarAnalisisFinancieroHistorico(dto);
+        Map<String, Double> resumenGastos = Map.of(
+            "Alimentación", 35000.0,
+            "Servicios", 15000.0,
+            "Entretenimiento", 10000.0,
+            "Transporte", 8000.0
+        );
+
+        RespuestaAnalisisFinancieroDTO dtoRespuesta = new RespuestaAnalisisFinancieroDTO(
+            "Moderado",
+            Map.of("Saludable", 0.85, "Peligro", 0.15),
+            resumenGastos,
+            "Se sugiere reducir los gastos en entretenimiento y aumentar la reserva de ahorro."
         );
 
         return ResponseEntity.ok(dtoRespuesta);

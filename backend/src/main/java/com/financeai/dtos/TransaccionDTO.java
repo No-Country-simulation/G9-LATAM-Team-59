@@ -4,7 +4,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TransaccionDTO {
 
     @NotBlank(message = "La descripción no puede estar vacía")
@@ -13,12 +21,6 @@ public class TransaccionDTO {
 
     @NotNull(message = "El valor no puede ser nulo")
     @Positive(message = "El valor debe ser mayor a cero")
-    private Double valor;
-
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-
-    public Double getValor() { return valor; }
-    public void setValor(Double valor) { this.valor = valor; }
+    private Double monto;
 
 }

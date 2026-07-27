@@ -119,9 +119,10 @@ cover/
 *.mo
 *.pot
 
-# Django stuff (if Django is used)
-*.log
-local_settings.py
+# Databases
+*.db
+*.db-journal
+*.sqlite
 db.sqlite3
 db.sqlite3-journal
 

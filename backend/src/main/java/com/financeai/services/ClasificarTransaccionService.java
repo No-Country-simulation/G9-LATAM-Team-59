@@ -1,34 +1,47 @@
 package com.financeai.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.financeai.dtos.RespuestaClasificarTransaccionesDTO;
 import com.financeai.dtos.SolicitudClasificarTransaccionesDTO;
+import com.financeai.dtos.TransaccionClasificadaDTO;
+import com.financeai.dtos.TransaccionDTO;
 import com.financeai.integrations.FinanceAiModelAdapter;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ClasificarTransaccionService {
 
     private final FinanceAiModelAdapter modelAdapter;
 
-    public ClasificarTransaccionService(FinanceAiModelAdapter modelAdapter) {
-        this.modelAdapter = modelAdapter;
-    }
-    /*
-    TODO: Necesito especificar si necesito clasificar una transaccion o un conjunto de transacciones.
-    */
     public RespuestaClasificarTransaccionesDTO clasificarTransacciones(SolicitudClasificarTransaccionesDTO dto) {
-        Map<String, Object> solicitud = new HashMap<>();
-        solicitud.put("transacciones", dto.getTransacciones());
+        
+        List<TransaccionDTO> transacciones = dto.getTransacciones();
+        Map<String, Double> resumenGastos = new HashMap<>();
 
-        Map<String, Object> modelResponse = modelAdapter.conectarModeloFinanceAI("/clasificacion", solicitud, Map.class);
+        for (TransaccionDTO transaccion : transacciones) {
+            String categoria = clasificarTransaccion(transaccion);
+            resumenGastos.merge(categoria, transaccion.getMonto(), Double::sum);
+        }
 
-        RespuestaClasificarTransaccionesDTO respuesta = new RespuestaClasificarTransaccionesDTO();
-        respuesta.setClasificaciones((Map<String, String>) modelResponse.get("clasificaciones"));
+        RespuestaClasificarTransaccionesDTO respuesta = new RespuestaClasificarTransaccionesDTO(resumenGastos);
         
         return respuesta;
+    }
+
+    public String clasificarTransaccion(TransaccionDTO transaccionDTO) {
+            
+        TransaccionClasificadaDTO modelResponse = modelAdapter.conectarModeloFinanceAI(
+                "/clasificacion", 
+                transaccionDTO, 
+                TransaccionClasificadaDTO.class);
+
+        return modelResponse.categoria();
     }
 }
