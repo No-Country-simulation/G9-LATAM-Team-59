@@ -34,8 +34,7 @@ public class AnalisisFinancieroController {
             "Moderado",
             0.85,
             resumenGastos,
-            "Se sugiere reducir los gastos en entretenimiento y aumentar la reserva de ahorro.",
-            "El análisis indica un comportamiento financiero equilibrado con oportunidades de optimización en gastos secundarios."
+            "Se sugiere reducir los gastos en entretenimiento y aumentar la reserva de ahorro."
         );
 
         return ResponseEntity.ok(dtoRespuesta);

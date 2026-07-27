@@ -21,9 +21,9 @@ public class AnalisisFinancieroService {
         validarSolicitud(dto);
 
         Map<String, Object> solicitud = new HashMap<>();
-        solicitud.put("ingreso_mensual", dto.getIngreso_mensual());
-        solicitud.put("frecuencia_ahorro", dto.getFrecuencia_ahorro());
-        solicitud.put("nivel_endeudamiento", dto.getNivel_endeudamiento());
+        solicitud.put("ingreso_mensual", dto.getIngresoMensual());
+        solicitud.put("frecuencia_ahorro", dto.getFrecuenciaAhorro());
+        solicitud.put("nivel_endeudamiento", dto.getNivelEndeudamiento());
         solicitud.put("transacciones", dto.getTransacciones());
 
         // Map<String, Object> modelResponse = modelAdapter.conectarModeloFinanceAI("/analisis", solicitud, Map.class);
