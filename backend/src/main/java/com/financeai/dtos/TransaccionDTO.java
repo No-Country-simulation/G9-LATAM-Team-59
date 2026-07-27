@@ -17,6 +17,6 @@ public class TransaccionDTO {
 
     @NotNull(message = "El valor no puede ser nulo")
     @Positive(message = "El valor debe ser mayor a cero")
-    private Double valor;
+    private Double monto;
 
 }

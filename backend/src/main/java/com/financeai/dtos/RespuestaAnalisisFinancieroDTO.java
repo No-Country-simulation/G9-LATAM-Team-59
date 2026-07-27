@@ -8,12 +8,14 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class RespuestaAnalisisFinancieroDTO {
 
     private String perfilFinanciero;

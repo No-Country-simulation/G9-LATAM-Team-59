@@ -21,7 +21,27 @@ public class AnalisisFinancieroController {
     private final AnalisisFinancieroService service;
 
     @PostMapping
-    public ResponseEntity<?> clasificarTransacciones(@RequestBody SolicitudAnalisisFinancieroDTO dto) {
+    public ResponseEntity<?> realizarAnalisisFinanciero(@RequestBody SolicitudAnalisisFinancieroDTO dto) {
+        // RespuestaAnalisisFinancieroDTO dtoRespuesta = service.clasificarTransacciones(dto);
+        Map<String, Double> resumenGastos = Map.of(
+            "Alimentación", 35000.0,
+            "Servicios", 15000.0,
+            "Entretenimiento", 10000.0,
+            "Transporte", 8000.0
+        );
+
+        RespuestaAnalisisFinancieroDTO dtoRespuesta = new RespuestaAnalisisFinancieroDTO(
+            "Moderado",
+            0.85,
+            resumenGastos,
+            "Se sugiere reducir los gastos en entretenimiento y aumentar la reserva de ahorro."
+        );
+
+        return ResponseEntity.ok(dtoRespuesta);
+    }
+
+    @PostMapping("/mis-transacciones")
+    public ResponseEntity<?> realizarAnalisisFinancieroHistorico(@RequestBody SolicitudAnalisisFinancieroHistoricoDTO dto) {
         // RespuestaAnalisisFinancieroDTO dtoRespuesta = service.clasificarTransacciones(dto);
         Map<String, Double> resumenGastos = Map.of(
             "Alimentación", 35000.0,
