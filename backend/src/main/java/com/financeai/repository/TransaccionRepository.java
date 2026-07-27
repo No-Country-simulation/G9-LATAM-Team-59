@@ -21,7 +21,7 @@ public interface TransaccionRepository extends JpaRepository<Transaccion, Long> 
     @Query("""
             SELECT t FROM Usuario u
             LEFT JOIN u.transacciones t
-            WHERE t.fechaHoraTransaccion BETWEEN :fechaHoraInicio AND :fechaHoraFin
+            WHERE t.fechaHoraRegistro BETWEEN :fechaHoraInicio AND :fechaHoraFin
             AND u.username = :username
             """)
     List<Transaccion> buscarTransaccionesEntre(
@@ -32,7 +32,7 @@ public interface TransaccionRepository extends JpaRepository<Transaccion, Long> 
     @Query("""
             SELECT t FROM Usuario u
             LEFT JOIN u.transacciones t
-            WHERE t.fechaHoraTransaccion >= :fechaHoraInicio
+            WHERE t.fechaHoraRegistro >= :fechaHoraInicio
             AND u.username = :username
             """)
     List<Transaccion> buscarTransaccionesDesde(
@@ -42,7 +42,7 @@ public interface TransaccionRepository extends JpaRepository<Transaccion, Long> 
     @Query("""
             SELECT t FROM Usuario u
             LEFT JOIN u.transacciones t
-            WHERE t.fechaHoraTransaccion <= :fechaHoraFin
+            WHERE t.fechaHoraRegistro <= :fechaHoraFin
             AND u.username = :username
             """)
     List<Transaccion> buscarTransaccionesHasta(
