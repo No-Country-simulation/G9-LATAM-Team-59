@@ -24,6 +24,7 @@ public class SecurityConfig {
 
     private final AuthenticationFilter authenticationFilter;
 
+    // Esta ignorando las peticiones del usuario
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http

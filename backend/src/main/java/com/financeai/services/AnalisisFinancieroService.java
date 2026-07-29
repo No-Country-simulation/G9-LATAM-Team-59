@@ -75,7 +75,7 @@ public class AnalisisFinancieroService {
     }
 
     @Transactional
-    private RespuestaAnalisisFinancieroDTO realizarAnalisisFinancieroHistorico(SolicitudAnalisisFinancieroHistoricoDTO dto) {
+    public RespuestaAnalisisFinancieroDTO realizarAnalisisFinancieroHistorico(SolicitudAnalisisFinancieroHistoricoDTO dto) {
     
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
