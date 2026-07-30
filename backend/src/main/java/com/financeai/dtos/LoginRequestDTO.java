@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record LoginRequestDTO(
-    @NotBlank @Email String email,
-    @NotBlank String password
+    @NotBlank(message = "Campo Email no puede estar vacío") @Email String email,
+    @NotBlank(message = "Falta la contraseña") String password
 ) {
 
 }

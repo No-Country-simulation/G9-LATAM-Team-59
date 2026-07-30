@@ -4,8 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 public record UsuarioDTO (
-    @NotBlank @Email String email,
-    @NotBlank String password,
-    @NotBlank String username
+    @NotBlank(message = "Campo email no puede estar vacío") @Email String email,
+    @NotBlank(message = "Contraseña es requerida") String password,
+    @NotBlank(message = "Se necesita un nombre de usuario") String username
 ) 
 {}

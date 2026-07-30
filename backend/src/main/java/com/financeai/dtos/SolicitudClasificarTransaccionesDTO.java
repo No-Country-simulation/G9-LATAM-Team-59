@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 public class SolicitudClasificarTransaccionesDTO {
 
-    @NotEmpty
+    @NotEmpty(message = "Se necesita una o más transacciones")
     @Valid
     private List<TransaccionDTO> transacciones;
 

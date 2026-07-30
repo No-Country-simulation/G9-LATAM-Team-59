@@ -16,16 +16,16 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class SolicitudAnalisisFinancieroHistoricoDTO {
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "Ingreso mensual no puede ser nulo (HISTORICO)")
+    @PositiveOrZero(message = "Ingreso mensual debe ser mayor o igual a 0 (HISTORICO)")
     private Double ingresoMensual;
 
-    @NotNull
+    @NotNull(message = "Nivel de endeudamiento no puede ser un valor nulo, debe ser un valor entre 0 y 100 (HISTORICO)")
     @Min(0)
     @Max(100)
     private Double nivelEndeudamiento;
 
-    @NotBlank
+    @NotBlank(message = "No puedes dejar vacío el campo Frecuencia de Ahorro debes especificar nivel (Nula, Baja, Media o Alta) (HISTORICO)")
     @Pattern(regexp = "Nula|Baja|Media|Alta")
     private String frecuenciaAhorro;
 

@@ -38,7 +38,7 @@ public class IniciarSesionService {
         
         String token = Jwts.builder()
             .subject(usuario.getEmail())
-            .issuer("Forum API")
+            .issuer("FinanceAI")
             .issuedAt(Date.from(Instant.now()))
             .expiration(Date.from(Instant.now().plusSeconds(86400))) // 24 hours
             .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
