@@ -25,7 +25,7 @@ except Exception as e:
 
 # DTOs de entrada
 class TransaccionInput(BaseModel):
-    glosa: str
+    descripcion: str
 
 class PerfilInput(BaseModel):
     ingreso_mensual: float
@@ -34,20 +34,19 @@ class PerfilInput(BaseModel):
     gasto_total: float
 
 # Endpoints
-@app.post("/api/v1/predict-transaccion")
+@app.post("/api/clasificacion")
 def predict_transaccion(data: TransaccionInput):
     if MODELS_LOADED:
-        vec_input = tfidf_vec.transform([data.glosa])
+        vec_input = tfidf_vec.transform([data.descripcion])
         categoria = str(nlp_model.predict(vec_input)[0])
     else:
         categoria = "Alimentación (Mock)"
 
     return {
-        "glosaOriginal": data.glosa,
         "categoria": categoria
     }
 
-@app.post("/api/v1/predict-perfil")
+@app.post("/api/analisis")
 def predict_perfil(data: PerfilInput):
     if MODELS_LOADED:
         ratio_gasto = data.gasto_total / data.ingreso_mensual if data.ingreso_mensual > 0 else 0.0
@@ -56,7 +55,7 @@ def predict_perfil(data: PerfilInput):
         df_raw = pd.DataFrame([{
             'ingreso_mensual': data.ingreso_mensual,
             'nivel_endeudamiento': data.nivel_endeudamiento,
-            'frecuencia_ahorro_cod': ahorro_cod,
+            'frecuencia_ahorro_encoded': ahorro_cod,
             'gasto_total': data.gasto_total,
             'ratio_gasto_ingreso': ratio_gasto
         }])
@@ -70,6 +69,6 @@ def predict_perfil(data: PerfilInput):
         prob_dict = {"En riesgo": 84.5, "En observación": 12.3, "Saludable": 3.2}
 
     return {
-        "perfilDiagnostico": perfil,
-        "probabilidades": prob_dict
+        "perfil_financiero": perfil,
+        "probabilidad": prob_dict
     }

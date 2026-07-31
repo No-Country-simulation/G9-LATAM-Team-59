@@ -28,7 +28,11 @@ public class FinanceAiModelAdapter {
             return respuesta;
 
         } catch (RestClientException e) {
-            throw new RuntimeException("Error en la comunicación con el modelo");
+            if (e instanceof org.springframework.web.client.RestClientResponseException rre) {
+        System.err.println("BODY DE RESPUESTA DE PYTHON: " + rre.getResponseBodyAsString());
+    }
+    throw new RuntimeException("Error en la comunicación con el modelo: " + e.getMessage(), e);
+            
         }
     }
 }
