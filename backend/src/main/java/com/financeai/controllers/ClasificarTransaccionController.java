@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/api/clasificar-transacciones")
 public class ClasificarTransaccionController {
     private final ClasificarTransaccionService service;
-
+    private final GestionarTransaccionesService gestionarTransaccionesService;
     // Ahora se comunicará con el modelo de IA
     @PostMapping
     public ResponseEntity<?> clasificarTransacciones(@RequestBody SolicitudClasificarTransaccionesDTO dto) {
@@ -42,11 +42,10 @@ public class ClasificarTransaccionController {
     }
 
     @GetMapping("/historico")
-    public ResponseEntity<List<Transaccion>> clasificarTransaccionesRegistradas(
+    public ResponseEntity<List<Transaccion>> verTransaccionesGuardadas(
             @RequestParam(name = "desde", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime desde,
             @RequestParam(name = "hasta", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime hasta) {
-
-                
-        
+        List<Transaccion> transacciones = gestionarTransaccionesService.verTransaccionesRangoFecha(desde, hasta);
+        return ResponseEntity.ok(transacciones);
     }
 }

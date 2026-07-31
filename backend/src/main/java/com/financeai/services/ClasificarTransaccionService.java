@@ -44,4 +44,5 @@ public class ClasificarTransaccionService {
 
         return modelResponse.categoria();
     }
+
 }
