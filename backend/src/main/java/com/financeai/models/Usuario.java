@@ -42,7 +42,7 @@ public class Usuario {
     private List<Transaccion> transacciones = new ArrayList<>();
 
     @JoinColumn(name = "usuario_id")
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<AnalisisFinanciero> analisisFinancieros = new ArrayList<>();
 
 }

@@ -4,6 +4,7 @@ import com.financeai.dtos.*;
 import com.financeai.services.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,5 +75,12 @@ public class AnalisisFinancieroController {
             @RequestBody SolicitudAnalisisFinancieroHistoricoDTO dto) {
         RespuestaAnalisisFinancieroDTO dtoRespuesta = service.realizarAnalisisFinancieroHistorico(dto, desde,hasta);
         return ResponseEntity.ok(dtoRespuesta);
+    }
+
+    // TODO: Probar modelo python
+    @GetMapping("/historial")
+    public ResponseEntity<?> obtenerHistorialAnalisisFinanciero() {
+        List<RespuestaAnalisisFinancieroDTO> historial = service.obtenerHistorialAnalisisFinanciero();
+        return ResponseEntity.ok(historial);
     }
 }
