@@ -1,7 +1,6 @@
 package com.financeai.controllers;
 
 import com.financeai.dtos.*;
-import com.financeai.models.Transaccion;
 import com.financeai.services.*;
 
 import java.time.LocalDateTime;
@@ -42,10 +41,10 @@ public class ClasificarTransaccionController {
     }
 
     @GetMapping("/historico")
-    public ResponseEntity<List<Transaccion>> verTransaccionesGuardadas(
+    public ResponseEntity<List<TransaccionDTO>> verTransaccionesGuardadas(
             @RequestParam(name = "desde", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime desde,
             @RequestParam(name = "hasta", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime hasta) {
-        List<Transaccion> transacciones = gestionarTransaccionesService.verTransaccionesRangoFecha(desde, hasta);
+        List<TransaccionDTO> transacciones = gestionarTransaccionesService.verTransaccionesRangoFecha(desde, hasta);
         return ResponseEntity.ok(transacciones);
     }
 }
