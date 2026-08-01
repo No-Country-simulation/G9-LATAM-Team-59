@@ -27,7 +27,7 @@ public class AnalisisFinancieroController {
     // Ahora se comunicará con el modelo de IA
 
     @PostMapping
-    public ResponseEntity<?> realizarAnalisisFinanciero(@RequestBody SolicitudAnalisisFinancieroDTO dto) {
+    public ResponseEntity<?> realizarAnalisisFinanciero(@RequestBody @Valid SolicitudAnalisisFinancieroDTO dto) {
         RespuestaAnalisisFinancieroDTO dtoRespuesta = service.realizarAnalisisFinanciero(dto);
         // Map<String, Double> resumenGastos = Map.of(
         //     "Alimentación", 35000.0,

@@ -15,6 +15,7 @@ import com.financeai.config.exceptions.ExcepcionEntidadNoEncontrada;
 import com.financeai.dtos.RespuestaAnalisisFinancieroDTO;
 import com.financeai.dtos.SolicitudAnalisisFinancieroDTO;
 import com.financeai.dtos.SolicitudAnalisisFinancieroHistoricoDTO;
+import com.financeai.dtos.SolicitudAnalisisModeloDTO;
 import com.financeai.dtos.SolicitudClasificarTransaccionesDTO;
 import com.financeai.dtos.TransaccionDTO;
 import com.financeai.integrations.FinanceAiModelAdapter;
@@ -42,19 +43,24 @@ public class AnalisisFinancieroService {
         resumenGastos = clasificarTransaccionService.clasificarTransacciones(
                 new SolicitudClasificarTransaccionesDTO(transacciones)).getClasificaciones();
 
-        Map<String, Object> solicitud = new HashMap<>();
-        solicitud.put("ingreso_mensual", dto.getIngresoMensual());
-        solicitud.put("frecuencia_ahorro", dto.getFrecuenciaAhorro());
-        solicitud.put("nivel_endeudamiento", dto.getNivelEndeudamiento());
-        solicitud.put("gasto_total", dto.getTransacciones().stream()
-                                    .mapToDouble(TransaccionDTO::getMonto)
-                                    .sum()
+        Double gastoTotal = 0.0;
+
+        for(TransaccionDTO transaccionDTO : transacciones) {
+            gastoTotal += transaccionDTO.getMonto();
+        }
+
+        
+        SolicitudAnalisisModeloDTO dtoModelo = new SolicitudAnalisisModeloDTO(
+                dto.getFrecuenciaAhorro(),
+                dto.getIngresoMensual(),
+                dto.getNivelEndeudamiento(),
+                gastoTotal
         );
 
         RespuestaAnalisisFinancieroDTO dtoRespuesta = modelAdapter.conectarModeloFinanceAI(
-                "/analisis", 
-                solicitud, 
-                RespuestaAnalisisFinancieroDTO.class);   
+                "/api/analisis", 
+                dtoModelo, 
+                RespuestaAnalisisFinancieroDTO.class);  
 
         dtoRespuesta.setResumenGastos(resumenGastos);
 
@@ -118,15 +124,16 @@ public class AnalisisFinancieroService {
             resumenGastos.merge(transaccion.getCategoria(), transaccion.getMonto(), Double::sum);
         }
 
-        Map<String, Object> solicitud = new HashMap<>();
-        solicitud.put("ingreso_mensual", dto.getIngresoMensual());
-        solicitud.put("frecuencia_ahorro", dto.getFrecuenciaAhorro());
-        solicitud.put("nivel_endeudamiento", dto.getNivelEndeudamiento());
-        solicitud.put("gasto_total", gastoTotal);
+        SolicitudAnalisisModeloDTO dtoModelo = new SolicitudAnalisisModeloDTO(
+                dto.getFrecuenciaAhorro(),
+                dto.getIngresoMensual(),
+                dto.getNivelEndeudamiento(),
+                gastoTotal
+        );
 
         RespuestaAnalisisFinancieroDTO dtoRespuesta = modelAdapter.conectarModeloFinanceAI(
-                "/analisis", 
-                solicitud, 
+                "/api/analisis", 
+                dtoModelo, 
                 RespuestaAnalisisFinancieroDTO.class);   
 
         dtoRespuesta.setResumenGastos(resumenGastos);

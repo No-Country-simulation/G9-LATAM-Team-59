@@ -22,7 +22,7 @@ public class ClasificarTransaccionController {
 
     // Ahora se comunicará con el modelo de IA
     @PostMapping
-    public ResponseEntity<?> clasificarTransacciones(@RequestBody SolicitudClasificarTransaccionesDTO dto) {
+    public ResponseEntity<?> clasificarTransacciones(@RequestBody @Valid SolicitudClasificarTransaccionesDTO dto) {
         RespuestaClasificarTransaccionesDTO dtoRespuesta = service.clasificarTransacciones(dto);
         
         // RespuestaClasificarTransaccionesDTO dtoRespuesta = new RespuestaClasificarTransaccionesDTO();
