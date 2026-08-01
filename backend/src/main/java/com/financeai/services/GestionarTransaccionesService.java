@@ -57,7 +57,8 @@ public class GestionarTransaccionesService {
         return respuesta;
     }
 
-    public List<Transaccion> verTransaccionesRangoFecha(LocalDateTime desde, LocalDateTime hasta) {
+    @Transactional(readOnly = true)
+    public List<TransaccionDTO> verTransaccionesRangoFecha(LocalDateTime desde, LocalDateTime hasta) {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (usuario == null) {
@@ -70,22 +71,32 @@ public class GestionarTransaccionesService {
         String username = usuario.getUsername();
 
         if (desde == null && hasta == null) {
-            return transaccionRepository.buscarTransacciones(username);
+            return transaccionRepository.buscarTransacciones(username).stream()
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .toList();
         }
 
         if (desde != null && hasta != null) {
-            return transaccionRepository.buscarTransaccionesEntre(desde, hasta, username);
+            return transaccionRepository.buscarTransaccionesEntre(desde, hasta, username).stream()
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .toList();
         }
 
         if (desde != null) {
-            return transaccionRepository.buscarTransaccionesDesde(desde, username);
+            return transaccionRepository.buscarTransaccionesDesde(desde, username).stream()
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .toList();
         }
 
         if (hasta != null) {
-            return transaccionRepository.buscarTransaccionesHasta(hasta, username);
+            return transaccionRepository.buscarTransaccionesHasta(hasta, username).stream()
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .toList();
         }
 
-        return transaccionRepository.buscarTransacciones(username);
+        return transaccionRepository.buscarTransacciones(username).stream()
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .toList();
     }
 
     @Transactional
