@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.financeai.dtos.LoginResponseDTO;
 import com.financeai.dtos.UsuarioDTO;
 import com.financeai.services.RegistrarCuentaService;
 
@@ -16,13 +17,13 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/auth")
 public class RegistrarCuentaController {
+
     private final RegistrarCuentaService service;
 
     @PostMapping("/registrar-cuenta")
     public ResponseEntity<?> login(@RequestBody @Valid UsuarioDTO dto) {
-        
-        service.registrarCuenta(dto);
-        return ResponseEntity.ok().build();
+        LoginResponseDTO LoginResponseDTO = service.registrarCuenta(dto);
+        return ResponseEntity.ok(LoginResponseDTO);
 
     }
 }   

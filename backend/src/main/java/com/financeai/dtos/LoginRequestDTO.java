@@ -6,6 +6,4 @@ import jakarta.validation.constraints.NotBlank;
 public record LoginRequestDTO(
     @NotBlank(message = "Campo Email no puede estar vacío") @Email String email,
     @NotBlank(message = "Falta la contraseña") String password
-) {
-
-}
+) {}

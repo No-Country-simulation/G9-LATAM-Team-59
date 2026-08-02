@@ -1,5 +1,6 @@
 package com.financeai.models;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,9 @@ public class AnalisisFinanciero {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private LocalDateTime fechaRealizacion;
+    
     @Column(nullable = false)
     private Double ingresoMensual;
 

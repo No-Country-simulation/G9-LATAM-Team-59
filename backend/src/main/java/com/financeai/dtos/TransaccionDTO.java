@@ -23,4 +23,6 @@ public class TransaccionDTO {
     @Positive(message = "El valor debe ser mayor a cero")
     private Double monto;
 
+    private Long id;
+
 }

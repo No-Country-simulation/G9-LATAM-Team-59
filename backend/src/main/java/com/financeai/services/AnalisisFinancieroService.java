@@ -94,7 +94,7 @@ public class AnalisisFinancieroService {
 
         List<Transaccion> transacciones = new ArrayList<>();
 
-        if (dto.getFechaFinPeriodo() == null && dto.getFechaFinPeriodo() == null) {
+        if (dto.getFechaInicioPeriodo() == null && dto.getFechaFinPeriodo() == null) {
             
             transacciones = transaccionRepository.buscarTransacciones(username);
 
@@ -169,6 +169,29 @@ public class AnalisisFinancieroService {
         return dtoRespuesta;
     } 
 
+   
+    public List<RespuestaAnalisisFinancieroDTO> obtenerHistorialAnalisisFinanciero() {
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (usuario == null) throw new ExcepcionEntidadNoEncontrada("Usuario");
+
+        userRepository.findById(usuario.getId())
+                .orElseThrow(() -> new ExcepcionEntidadNoEncontrada("Usuario"));
+
+        List<AnalisisFinanciero> analisisFinancieros = usuario.getAnalisisFinancieros();
+        List<RespuestaAnalisisFinancieroDTO> historial = new ArrayList<>();
+
+        for (AnalisisFinanciero analisis : analisisFinancieros) {
+            RespuestaAnalisisFinancieroDTO dto = new RespuestaAnalisisFinancieroDTO();
+            dto.setPerfilFinanciero(analisis.getPerfilFinanciero());
+            dto.setProbabilidad(analisis.getProbabilidad());
+            dto.setResumenGastos(analisis.getResumenGastos());
+            dto.setRecomendaciones(analisis.getRecomendaciones());
+            historial.add(dto);
+        }
+
+        return historial;
+    }
     
     private void validarSolicitud(SolicitudAnalisisFinancieroDTO dto) {
         if (dto.getTransacciones() == null || dto.getTransacciones().isEmpty()) {

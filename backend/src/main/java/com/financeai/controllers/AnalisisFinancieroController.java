@@ -5,13 +5,14 @@ import com.financeai.services.*;
 
 import jakarta.validation.Valid;
 
-// import jakarta.validation.Valid;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,45 +25,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AnalisisFinancieroController {
     private final AnalisisFinancieroService service;
 
-    // Ahora se comunicará con el modelo de IA
-
     @PostMapping
     public ResponseEntity<?> realizarAnalisisFinanciero(@RequestBody @Valid SolicitudAnalisisFinancieroDTO dto) {
         RespuestaAnalisisFinancieroDTO dtoRespuesta = service.realizarAnalisisFinanciero(dto);
-        // Map<String, Double> resumenGastos = Map.of(
-        //     "Alimentación", 35000.0,
-        //     "Servicios", 15000.0,
-        //     "Entretenimiento", 10000.0,
-        //     "Transporte", 8000.0
-        // );
-
-        // RespuestaAnalisisFinancieroDTO dtoRespuesta = new RespuestaAnalisisFinancieroDTO(
-        //     "Moderado",
-        //     Map.of("Saludable", 0.85, "Peligro", 0.15),
-        //     resumenGastos,
-        //     "Se sugiere reducir los gastos en entretenimiento y aumentar la reserva de ahorro."
-        // );
-
         return ResponseEntity.ok(dtoRespuesta);
     }
 
-    @PostMapping("/mis-transacciones")
-    public ResponseEntity<?> realizarAnalisisFinancieroHistorico(@RequestBody SolicitudAnalisisFinancieroHistoricoDTO dto) {
-        RespuestaAnalisisFinancieroDTO dtoRespuesta = service.realizarAnalisisFinancieroHistorico(dto);
-        // Map<String, Double> resumenGastos = Map.of(
-        //     "Alimentación", 35000.0,
-        //     "Servicios", 15000.0,
-        //     "Entretenimiento", 10000.0,
-        //     "Transporte", 8000.0
-        // );
+     @PostMapping("/mis-transacciones")
+     public ResponseEntity<?> realizarAnalisisFinancieroHistorico(@RequestBody SolicitudAnalisisFinancieroHistoricoDTO dto) {
+         RespuestaAnalisisFinancieroDTO dtoRespuesta = service.realizarAnalisisFinancieroHistorico(dto);
+         return ResponseEntity.ok(dtoRespuesta);
+     }
 
-        // RespuestaAnalisisFinancieroDTO dtoRespuesta = new RespuestaAnalisisFinancieroDTO(
-        //     "Moderado",
-        //     Map.of("Saludable", 0.85, "Peligro", 0.15),
-        //     resumenGastos,
-        //     "Se sugiere reducir los gastos en entretenimiento y aumentar la reserva de ahorro."
-        // );
 
-        return ResponseEntity.ok(dtoRespuesta);
+    @GetMapping("/historial")
+    public ResponseEntity<?> obtenerHistorialAnalisisFinanciero() {
+        List<RespuestaAnalisisFinancieroDTO> historial = service.obtenerHistorialAnalisisFinanciero();
+        return ResponseEntity.ok(historial);
     }
 }
