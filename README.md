@@ -31,11 +31,11 @@ El MVP se enfoca en un flujo simple de extremo a extremo:
 
 ## 🏗️ Arquitectura general
 
-| Capa　　　　　　　　　　| Tecnología                  | Función                                                           |
-| -------------------------| -----------------------------| -------------------------------------------------------------------|
-| 🖥️ **Frontend**　　　　 | Interfaz simple             | Ingreso de datos y visualización de resultados.                   |
+| Capa　　　　　　　　　　 | Tecnología                  | Función                                                           |
+| ------------------------ | --------------------------- | ----------------------------------------------------------------- |
+| 🖥️ **Frontend**　　　　  | Interfaz simple             | Ingreso de datos y visualización de resultados.                   |
 | ⚙️ **Backend**　　　　　 | Spring Boot (API REST)      | Recepción, validación y orquestación del flujo.                   |
-| 🧠 **Ciencia de Datos** | Python                      | Clasificación de transacciones y predicción de perfil financiero. |
+| 🧠 **Ciencia de Datos**  | Python                      | Clasificación de transacciones y predicción de perfil financiero. |
 | ☁️ **OCI**　　　　　　　 | Oracle Cloud Infrastructure | Despliegue y/o almacenamiento en la nube.                         |
 
 ---
@@ -195,7 +195,7 @@ Se debe ejecutar el servidor Spring Boot utilizando el Gradle Wrapper:
   gradlew.bat bootRun
   ```
 
-*Nota: La primera vez que sea ejecutado, Gradle descargará automáticamente las dependencias del proyecto.*
+_Nota: La primera vez que sea ejecutado, Gradle descargará automáticamente las dependencias del proyecto._
 
 ---
 
@@ -215,13 +215,42 @@ Una vez iniciada la aplicación:
 
 ---
 
+## 🌐 Ejecutar el frontend localmente
+
+Para abrir la interfaz web sin depender de abrir el archivo HTML directamente, puedes usar el launcher incluido en la carpeta frontend.
+
+### Windows
+
+```bat
+cd frontend
+start_server.bat
+```
+
+### Linux / macOS
+
+```bash
+cd frontend
+chmod +x start_server.sh
+./start_server.sh
+```
+
+Luego abre en tu navegador:
+
+```text
+http://127.0.0.1:3000/html/index.html
+```
+
+El servidor usa el puerto 3000 y sirve los archivos desde la carpeta frontend, por lo que funciona de forma consistente en Windows, macOS y Linux.
+
+---
+
 ## 🛠️ Tecnologías utilizadas
 
-- Java + Spring Boot  
-- Python (pandas, scikit-learn, etc.)  
-- Oracle Cloud Infrastructure (OCI)  
-- HTML/CSS/JS (Frontend básico)  
-- Maven / Gradle  
+- Java + Spring Boot
+- Python (pandas, scikit-learn, etc.)
+- Oracle Cloud Infrastructure (OCI)
+- HTML/CSS/JS (Frontend básico)
+- Maven / Gradle
 - Postman (pruebas de API)
 
 ---
