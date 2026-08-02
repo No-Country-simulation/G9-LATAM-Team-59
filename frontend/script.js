@@ -781,3 +781,91 @@ function clasificarTransaccion() {
     contenedor.appendChild(input);
   }
 }
+
+function mostrarMensaje(mensaje, tipo = "danger") {
+  const alerta = document.getElementById("mensaje-alerta");
+  if (!alerta) return;
+
+  alerta.className = `alert alert-${tipo} mt-3`;
+  alerta.textContent = mensaje;
+  alerta.style.display = "block";
+}
+
+function registrarCuenta() {
+  let email = document.getElementById("email").value.trim();
+  let password = document.getElementById("password").value;
+  let username = document.getElementById("username").value.trim();
+
+  const datos = {
+    email: email,
+    password: password,
+    username: username,
+  };
+
+  console.log("JSON enviado al Backend:");
+  console.log(datos);
+
+  fetch("http://localhost:8080/api/auth/registrar-cuenta", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(datos),
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.message || "No se pudo completar el registro.",
+        );
+      }
+      mostrarMensaje(
+        "Cuenta registrada correctamente. Por favor, inicia sesión.",
+        "success",
+      );
+      window.location.href = "iniciar_sesion.html";
+    })
+    .catch((error) => {
+      console.log(error);
+      mostrarMensaje(
+        error.message || "Ocurrió un error al registrar la cuenta.",
+      );
+    });
+}
+
+function iniciarSesion() {
+  let email = document.getElementById("email").value.trim();
+  let password = document.getElementById("password").value;
+
+  const datos = {
+    email: email,
+    password: password,
+  };
+
+  console.log("JSON enviado al Backend:");
+  console.log(datos);
+
+  fetch("http://localhost:8080/api/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(datos),
+  })
+    .then(async (response) => {
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || "Credenciales inválidas.");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+      mostrarMensaje("Inicio de sesión correcto.", "success");
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      console.log(error);
+      mostrarMensaje(error.message || "No se pudo iniciar sesión.");
+    });
+}
