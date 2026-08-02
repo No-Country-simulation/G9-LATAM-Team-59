@@ -1,6 +1,8 @@
 package com.financeai.services;
 
 import com.financeai.repository.UserRepository;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,7 +83,10 @@ public class AnalisisFinancieroService {
     }
 
     @Transactional
-    public RespuestaAnalisisFinancieroDTO realizarAnalisisFinancieroHistorico(SolicitudAnalisisFinancieroHistoricoDTO dto) {
+    public RespuestaAnalisisFinancieroDTO realizarAnalisisFinancieroHistorico(
+            LocalDate fechaInicioPeriodo,
+            LocalDate fechaFinPeriodo,
+            SolicitudAnalisisFinancieroHistoricoDTO dto) {
     
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -94,24 +99,24 @@ public class AnalisisFinancieroService {
 
         List<Transaccion> transacciones = new ArrayList<>();
 
-        if (dto.getFechaInicioPeriodo() == null && dto.getFechaFinPeriodo() == null) {
+        if (fechaInicioPeriodo == null && fechaFinPeriodo == null) {
             
             transacciones = transaccionRepository.buscarTransacciones(username);
 
-        } else if (dto.getFechaFinPeriodo() == null) {
+        } else if (fechaFinPeriodo == null) {
 
-            LocalDateTime fechaHoraInicio = dto.getFechaInicioPeriodo().atStartOfDay();
+            LocalDateTime fechaHoraInicio = fechaInicioPeriodo.atStartOfDay();
             transacciones = transaccionRepository.buscarTransaccionesDesde(fechaHoraInicio, username);
 
-        } else if (dto.getFechaInicioPeriodo() == null) {
+        } else if (fechaInicioPeriodo == null) {
 
-            LocalDateTime fechaHoraFin = dto.getFechaFinPeriodo().atStartOfDay().plusHours(24);
+            LocalDateTime fechaHoraFin = fechaFinPeriodo.atStartOfDay().plusHours(24);
             transacciones = transaccionRepository.buscarTransaccionesHasta(fechaHoraFin, username);
 
         } else {
 
-            LocalDateTime fechaHoraInicio = dto.getFechaInicioPeriodo().atStartOfDay();
-            LocalDateTime fechaHoraFin = dto.getFechaFinPeriodo().atStartOfDay().plusHours(24);
+            LocalDateTime fechaHoraInicio = fechaInicioPeriodo.atStartOfDay();
+            LocalDateTime fechaHoraFin = fechaFinPeriodo.atStartOfDay().plusHours(24);
             transacciones = transaccionRepository.buscarTransaccionesEntre(fechaHoraInicio, fechaHoraFin, username);
 
         }
