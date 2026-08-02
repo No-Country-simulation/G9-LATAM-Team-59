@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @NoArgsConstructor
@@ -29,10 +27,4 @@ public class SolicitudAnalisisFinancieroHistoricoDTO {
     @NotBlank(message = "No puedes dejar vacío el campo Frecuencia de Ahorro debes especificar nivel (Nula, Baja, Media o Alta) (HISTORICO)")
     @Pattern(regexp = "Nula|Baja|Media|Alta")
     private String frecuenciaAhorro;
-
-    @JsonProperty("fecha_inicio_periodo")
-    private LocalDate fechaInicioPeriodo;
-
-    @JsonProperty("fecha_fin_periodo")
-    private LocalDate fechaFinPeriodo;
 }
