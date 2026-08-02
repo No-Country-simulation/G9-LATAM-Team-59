@@ -44,7 +44,7 @@ public class IniciarSesionService {
             .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
             .compact();
         
-        return new TokenResponseDTO(token, "Bearer", usuario.getEmail());
+        return new TokenResponseDTO(token, "Bearer", usuario.getUsername(), usuario.getEmail());
 
     }
 }
