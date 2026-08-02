@@ -1,7 +1,6 @@
 package com.financeai.services;
 
 import com.financeai.repository.UserRepository;
-import java.time.LocalTime;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -163,96 +162,7 @@ public class AnalisisFinancieroService {
         return dtoRespuesta;
     } 
 
-    // Se actualizo para soportar rango de fechas (sobrecarga de metodo por ahora)
-    @Transactional
-    public RespuestaAnalisisFinancieroDTO realizarAnalisisFinancieroHistorico(
-            SolicitudAnalisisFinancieroHistoricoDTO dto,
-            LocalDateTime desde,
-            LocalDateTime hasta) {
-    
-        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (usuario == null) throw new ExcepcionEntidadNoEncontrada("Usuario");
-
-        userRepository.findById(usuario.getId())
-                .orElseThrow(() -> new ExcepcionEntidadNoEncontrada("Usuario"));
-
-        String username = usuario.getUsername();
-
-        List<Transaccion> transacciones = new ArrayList<>();
-
-        if (desde == null && hasta == null) {
-            
-            transacciones = transaccionRepository.buscarTransacciones(username);
-
-        } else if (desde != null && hasta == null) {
-
-            transacciones = transaccionRepository.buscarTransaccionesDesde(desde, username);
-
-        } else if (desde == null) {
-
-            LocalDateTime fechaHoraFin = hasta.with(LocalTime.MAX);
-            transacciones = transaccionRepository.buscarTransaccionesHasta(fechaHoraFin, username);
-
-        } else {
-
-            LocalDateTime fechaHoraFin = hasta.with(LocalTime.MAX);
-            transacciones = transaccionRepository.buscarTransaccionesEntre(desde, fechaHoraFin, username);
-
-        }
-
-        Map<String, Double> resumenGastos = new HashMap<>();
-        Double gastoTotal = 0.0;
-
-        for (Transaccion transaccion : transacciones) {
-            gastoTotal += transaccion.getMonto();
-            resumenGastos.merge(transaccion.getCategoria(), transaccion.getMonto(), Double::sum);
-        }
-
-        Map<String, Object> solicitud = new HashMap<>();
-        solicitud.put("ingreso_mensual", dto.getIngresoMensual());
-        solicitud.put("frecuencia_ahorro", dto.getFrecuenciaAhorro());
-        solicitud.put("nivel_endeudamiento", dto.getNivelEndeudamiento());
-        solicitud.put("gasto_total", gastoTotal);
-
-        RespuestaAnalisisFinancieroDTO dtoRespuesta = modelAdapter.conectarModeloFinanceAI(
-                "/analisis", 
-                solicitud, 
-                RespuestaAnalisisFinancieroDTO.class);   
-
-        dtoRespuesta.setResumenGastos(resumenGastos);
-
-        String recomendaciones = switch (dtoRespuesta.getPerfilFinanciero() != null ? dtoRespuesta.getPerfilFinanciero() : "") {
-            case "Saludable" -> 
-                "¡Excelente gestión financiera! Mantén tu hábito de ahorro activo y considera explorar opciones de inversión a mediano o largo plazo para hacer crecer tu patrimonio.";
-            case "En observación" -> 
-                "Tu situación financiera es estable, pero requiere precaución. Se sugiere revisar tus gastos no esenciales y fortalecer tu fondo de emergencia para evitar un posible sobreendeudamiento.";
-            case "En riesgo" -> 
-                "Atención: Tu nivel de gasto o endeudamiento es elevado en relación con tus ingresos. Te recomendamos priorizar el pago de deudas de alto interés, recortar gastos no prioritarios y elaborar un presupuesto mensual estricto.";
-            default -> 
-                "Te recomendamos revisar periódicamente tu presupuesto mensual y llevar un control constante de tus gastos.";
-        };
-
-        dtoRespuesta.setRecomendaciones(recomendaciones);
-
-        AnalisisFinanciero analisisFinanciero = AnalisisFinanciero.builder()
-                                                    .ingresoMensual(dto.getIngresoMensual())
-                                                    .frecuenciaAhorro(dto.getFrecuenciaAhorro())
-                                                    .nivelEndeudamiento(dto.getNivelEndeudamiento())
-                                                    .perfilFinanciero(dtoRespuesta.getPerfilFinanciero())
-                                                    .probabilidad(dtoRespuesta.getProbabilidad())
-                                                    .recomendaciones(recomendaciones)
-                                                    .resumenGastos(resumenGastos)
-                                                    .transacciones(transacciones)
-                                                    .build();
-
-        usuario.getAnalisisFinancieros().add(analisisFinanciero);
-
-        userRepository.save(usuario);
-
-        return dtoRespuesta;
-    } 
-
+   
     public List<RespuestaAnalisisFinancieroDTO> obtenerHistorialAnalisisFinanciero() {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
