@@ -1,5 +1,6 @@
 package com.financeai.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -58,8 +59,11 @@ public class GestionarTransaccionesService {
     }
 
     @Transactional(readOnly = true)
-    public List<TransaccionDTO> verTransaccionesRangoFecha(LocalDateTime desde, LocalDateTime hasta) {
+    public List<TransaccionDTO> verTransaccionesRangoFecha(LocalDate desde, LocalDate hasta) {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        LocalDateTime fechaHoraInicio = (desde != null) ? desde.atStartOfDay() : null;
+        LocalDateTime fechaHoraHasta = (hasta != null) ? hasta.atStartOfDay().plusHours(24) : null;
 
         if (usuario == null) {
             throw new ExcepcionEntidadNoEncontrada("Usuario");
@@ -70,26 +74,26 @@ public class GestionarTransaccionesService {
 
         String username = usuario.getUsername();
 
-        if (desde == null && hasta == null) {
+        if (fechaHoraInicio == null && fechaHoraHasta == null) {
             return transaccionRepository.buscarTransacciones(username).stream()
             .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
             .toList();
         }
 
-        if (desde != null && hasta != null) {
-            return transaccionRepository.buscarTransaccionesEntre(desde, hasta, username).stream()
+        if (fechaHoraInicio != null && fechaHoraHasta != null) {
+            return transaccionRepository.buscarTransaccionesEntre(fechaHoraInicio, fechaHoraHasta, username).stream()
             .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
             .toList();
         }
 
-        if (desde != null) {
-            return transaccionRepository.buscarTransaccionesDesde(desde, username).stream()
+        if (fechaHoraInicio != null) {
+            return transaccionRepository.buscarTransaccionesDesde(fechaHoraInicio, username).stream()
             .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
             .toList();
         }
 
-        if (hasta != null) {
-            return transaccionRepository.buscarTransaccionesHasta(hasta, username).stream()
+        if (fechaHoraHasta != null) {
+            return transaccionRepository.buscarTransaccionesHasta(fechaHoraHasta, username).stream()
             .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
             .toList();
         }

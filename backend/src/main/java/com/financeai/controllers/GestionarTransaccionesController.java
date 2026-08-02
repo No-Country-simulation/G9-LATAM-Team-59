@@ -1,6 +1,6 @@
 package com.financeai.controllers;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -29,8 +29,8 @@ public class GestionarTransaccionesController {
 
     @GetMapping("/transacciones")
     public ResponseEntity<?> verTransacciones(
-        @RequestParam(name = "desde", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
-        @RequestParam(name = "hasta", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaHasta
+        @RequestParam(name = "desde", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+        @RequestParam(name = "hasta", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaHasta
     ) {
         List<TransaccionDTO> dto = gestionarTransaccionesService.verTransaccionesRangoFecha(fechaInicio, fechaHasta);
         return ResponseEntity.ok(dto);
