@@ -28,7 +28,7 @@ public class FinanceAiModelAdapter {
             return respuesta;
 
         } catch (RestClientException e) {
-            throw new RuntimeException("Error en la comunicación con el modelo");
+            throw new RuntimeException("Error en la comunicación con el modelo: " + e.getMessage(), e);
         }
     }
 }

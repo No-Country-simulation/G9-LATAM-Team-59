@@ -24,7 +24,7 @@ public class AnalisisFinancieroController {
     private final AnalisisFinancieroService service;
 
     @PostMapping
-    public ResponseEntity<?> realizarAnalisisFinanciero(@RequestBody SolicitudAnalisisFinancieroDTO dto) {
+    public ResponseEntity<?> realizarAnalisisFinanciero(@RequestBody @Valid SolicitudAnalisisFinancieroDTO dto) {
         RespuestaAnalisisFinancieroDTO dtoRespuesta = service.realizarAnalisisFinanciero(dto);
         return ResponseEntity.ok(dtoRespuesta);
     }

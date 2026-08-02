@@ -19,7 +19,7 @@ public class ClasificarTransaccionController {
     private final ClasificarTransaccionService service;
     
     @PostMapping
-    public ResponseEntity<?> clasificarTransacciones(@RequestBody SolicitudClasificarTransaccionesDTO dto) {
+    public ResponseEntity<?> clasificarTransacciones(@RequestBody @Valid SolicitudClasificarTransaccionesDTO dto) {
         RespuestaClasificarTransaccionesDTO dtoRespuesta = service.clasificarTransacciones(dto);
         return ResponseEntity.ok(dtoRespuesta);
     }

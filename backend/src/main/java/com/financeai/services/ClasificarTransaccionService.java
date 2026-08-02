@@ -38,7 +38,7 @@ public class ClasificarTransaccionService {
     public String clasificarTransaccion(TransaccionDTO transaccionDTO) {
             
         TransaccionClasificadaDTO modelResponse = modelAdapter.conectarModeloFinanceAI(
-                "/clasificacion", 
+                "/api/clasificacion", 
                 transaccionDTO, 
                 TransaccionClasificadaDTO.class);
 
