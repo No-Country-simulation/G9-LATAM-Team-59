@@ -3,6 +3,8 @@ package com.financeai.controllers;
 import com.financeai.dtos.*;
 import com.financeai.services.*;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
