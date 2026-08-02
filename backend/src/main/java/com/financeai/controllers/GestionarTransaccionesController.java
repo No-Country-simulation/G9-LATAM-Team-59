@@ -3,6 +3,7 @@ package com.financeai.controllers;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +29,8 @@ public class GestionarTransaccionesController {
 
     @GetMapping("/transacciones")
     public ResponseEntity<?> verTransacciones(
-        @RequestParam("desde") LocalDateTime fechaInicio,
-        @RequestParam("hasta") LocalDateTime fechaHasta
+        @RequestParam(name = "desde", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+        @RequestParam(name = "hasta", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaHasta
     ) {
         List<TransaccionDTO> dto = gestionarTransaccionesService.verTransaccionesRangoFecha(fechaInicio, fechaHasta);
         return ResponseEntity.ok(dto);
