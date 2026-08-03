@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class ExcepcionOperacionInvalida extends ExcepcionNegocio {
 
-    public ExcepcionOperacionInvalida(String mensaje) {
-        super(mensaje);
+    public ExcepcionOperacionInvalida(String message) {
+        super(message);
     }
 
     @Override
