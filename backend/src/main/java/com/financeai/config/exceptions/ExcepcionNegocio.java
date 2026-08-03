@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public abstract class ExcepcionNegocio extends RuntimeException{
 
-    protected ExcepcionNegocio(String mensaje){
-        super(mensaje);
+    protected ExcepcionNegocio(String message){
+        super(message);
     }
 
     public abstract HttpStatus getStatus();

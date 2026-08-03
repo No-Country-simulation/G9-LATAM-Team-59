@@ -15,13 +15,13 @@ public class ManejadorGlobalExcepciones {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<RespuestaExcepcionDTO> manejarValidacion(MethodArgumentNotValidException excepcion) {
-        String mensaje = excepcion.getBindingResult().getFieldErrors().stream()
+        String message = excepcion.getBindingResult().getFieldErrors().stream()
                 .map(FieldError::getDefaultMessage)
                 .findFirst()
                 .orElse("Error de validación");
         
         RespuestaExcepcionDTO respuestaExcepcionDTO = new RespuestaExcepcionDTO(
-                mensaje,
+                message,
                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 LocalDateTime.now());
 
