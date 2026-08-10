@@ -43,6 +43,7 @@ dependencies {
 	testAnnotationProcessor("org.projectlombok:lombok")
 
 	implementation("org.springframework.boot:spring-boot-devtools:4.1.0")
+	runtimeOnly("org.joda:joda-money:2.0.3")
 }
 
 tasks.withType<Test> {
