@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.financeai.config.exceptions.ExcepcionEntidadNoEncontrada;
+import com.financeai.dtos.AnalisisFinancieroDTO;
 import com.financeai.dtos.RespuestaAnalisisFinancieroDTO;
 import com.financeai.dtos.SolicitudAnalisisFinancieroDTO;
 import com.financeai.dtos.SolicitudAnalisisFinancieroHistoricoDTO;
@@ -192,7 +193,7 @@ public class AnalisisFinancieroService {
     } 
 
    
-    public List<RespuestaAnalisisFinancieroDTO> obtenerHistorialAnalisisFinanciero() {
+    public List<AnalisisFinancieroDTO> obtenerHistorialAnalisisFinanciero() {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (usuario == null) throw new ExcepcionEntidadNoEncontrada("Usuario");
@@ -201,14 +202,33 @@ public class AnalisisFinancieroService {
                 .orElseThrow(() -> new ExcepcionEntidadNoEncontrada("Usuario"));
 
         List<AnalisisFinanciero> analisisFinancieros = usuario.getAnalisisFinancieros();
-        List<RespuestaAnalisisFinancieroDTO> historial = new ArrayList<>();
+        List<AnalisisFinancieroDTO> historial = new ArrayList<>();
 
         for (AnalisisFinanciero analisis : analisisFinancieros) {
-            RespuestaAnalisisFinancieroDTO dto = new RespuestaAnalisisFinancieroDTO();
+            AnalisisFinancieroDTO dto = new AnalisisFinancieroDTO();
             dto.setPerfilFinanciero(analisis.getPerfilFinanciero());
             dto.setProbabilidad(analisis.getProbabilidad());
             dto.setResumenGastos(analisis.getResumenGastos());
             dto.setRecomendaciones(analisis.getRecomendaciones());
+            dto.setMonedaIngresoMensual(analisis.getMonedaIngresoMensual());
+            dto.setFechaRealizacion(analisis.getFechaRealizacion());
+            dto.setIngresoMensual(analisis.getIngresoMensual());
+            dto.setFrecuenciaAhorro(analisis.getFrecuenciaAhorro());
+            dto.setNivelEndeudamiento(analisis.getNivelEndeudamiento());
+
+            List<TransaccionDTO> transaccionesDTO = new ArrayList<>();
+
+            for (Transaccion transaccion : analisis.getTransacciones()) {
+                TransaccionDTO transaccionDTO = new TransaccionDTO();
+                transaccionDTO.setDescripcion(transaccion.getDescripcion());
+                transaccionDTO.setMoneda(transaccion.getMoneda());
+                transaccionDTO.setMonto(transaccion.getMonto());
+
+                transaccionesDTO.add(transaccionDTO);
+            }
+
+            dto.setTransacciones(transaccionesDTO);
+
             historial.add(dto);
         }
 
