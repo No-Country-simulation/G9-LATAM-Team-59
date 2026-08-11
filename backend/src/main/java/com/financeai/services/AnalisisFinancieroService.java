@@ -20,6 +20,7 @@ import com.financeai.dtos.SolicitudAnalisisFinancieroHistoricoDTO;
 import com.financeai.dtos.SolicitudAnalisisModeloDTO;
 import com.financeai.dtos.SolicitudClasificarTransaccionesDTO;
 import com.financeai.dtos.TransaccionDTO;
+import com.financeai.integrations.CurrencyAdapter;
 import com.financeai.integrations.FinanceAiModelAdapter;
 import com.financeai.models.AnalisisFinanciero;
 import com.financeai.models.Transaccion;
@@ -35,6 +36,7 @@ public class AnalisisFinancieroService {
     final private FinanceAiModelAdapter modelAdapter;
     final private ClasificarTransaccionService clasificarTransaccionService;
     private final TransaccionRepository transaccionRepository;
+    private final CurrencyAdapter currencyAdapter;
 
     public RespuestaAnalisisFinancieroDTO realizarAnalisisFinanciero(SolicitudAnalisisFinancieroDTO dto) {
         validarSolicitud(dto);
@@ -48,13 +50,21 @@ public class AnalisisFinancieroService {
         Double gastoTotal = 0.0;
 
         for(TransaccionDTO transaccionDTO : transacciones) {
-            gastoTotal += transaccionDTO.getMonto();
+            
+            String moneda = transaccionDTO.getMoneda();
+
+            Double rate = currencyAdapter.getConversionRate(moneda, "USD").rate();
+
+            gastoTotal += transaccionDTO.getMonto()*rate;
         }
 
-        
+        String monedaIngresoMensual = dto.getMonedaIngresoMensual();
+
+        Double rateIngresoMensual = currencyAdapter.getConversionRate(monedaIngresoMensual, "USD").rate();
+
         SolicitudAnalisisModeloDTO dtoModelo = new SolicitudAnalisisModeloDTO(
                 dto.getFrecuenciaAhorro(),
-                dto.getIngresoMensual(),
+                dto.getIngresoMensual()*rateIngresoMensual,
                 dto.getNivelEndeudamiento(),
                 gastoTotal
         );
@@ -125,13 +135,20 @@ public class AnalisisFinancieroService {
         Double gastoTotal = 0.0;
 
         for (Transaccion transaccion : transacciones) {
-            gastoTotal += transaccion.getMonto();
-            resumenGastos.merge(transaccion.getCategoria(), transaccion.getMonto(), Double::sum);
+
+            String moneda = transaccion.getMoneda();
+            Double rate = currencyAdapter.getConversionRate(moneda, "USD").rate();
+            gastoTotal += transaccion.getMonto()*rate;
+            resumenGastos.merge(transaccion.getCategoria(), transaccion.getMonto()*rate, Double::sum);
         }
+
+        String monedaIngresoMensual = dto.getMonedaIngresoMensual();
+
+        Double rateIngresoMensual = currencyAdapter.getConversionRate(monedaIngresoMensual, "USD").rate();
 
         SolicitudAnalisisModeloDTO dtoModelo = new SolicitudAnalisisModeloDTO(
                 dto.getFrecuenciaAhorro(),
-                dto.getIngresoMensual(),
+                dto.getIngresoMensual()*rateIngresoMensual,
                 dto.getNivelEndeudamiento(),
                 gastoTotal
         );

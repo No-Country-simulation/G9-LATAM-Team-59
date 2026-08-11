@@ -27,4 +27,7 @@ public class SolicitudAnalisisFinancieroHistoricoDTO {
     @NotBlank(message = "No puedes dejar vacío el campo Frecuencia de Ahorro debes especificar nivel (Nula, Baja, Media o Alta) (HISTORICO)")
     @Pattern(regexp = "Nula|Baja|Media|Alta")
     private String frecuenciaAhorro;
+
+    @JsonProperty("moneda_ingreso_mensual")
+    private String monedaIngresoMensual = "USD";
 }

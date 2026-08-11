@@ -44,6 +44,7 @@ public class GestionarTransaccionesService {
         transaccion.setDescripcion(transaccionDTO.getDescripcion());
         transaccion.setMonto(transaccionDTO.getMonto());
         transaccion.setCategoria(categoria);
+        transaccion.setMoneda(transaccionDTO.getMoneda());
 
         usuario.getTransacciones().add(transaccion);
         userRepository.save(usuario);
@@ -76,30 +77,30 @@ public class GestionarTransaccionesService {
 
         if (fechaHoraInicio == null && fechaHoraHasta == null) {
             return transaccionRepository.buscarTransacciones(username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
             .toList();
         }
 
         if (fechaHoraInicio != null && fechaHoraHasta != null) {
             return transaccionRepository.buscarTransaccionesEntre(fechaHoraInicio, fechaHoraHasta, username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
             .toList();
         }
 
         if (fechaHoraInicio != null) {
             return transaccionRepository.buscarTransaccionesDesde(fechaHoraInicio, username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
             .toList();
         }
 
         if (fechaHoraHasta != null) {
             return transaccionRepository.buscarTransaccionesHasta(fechaHoraHasta, username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
             .toList();
         }
 
         return transaccionRepository.buscarTransacciones(username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId()))
+            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
             .toList();
     }
 

@@ -25,4 +25,6 @@ public class TransaccionDTO {
 
     private Long id;
 
+    private String moneda = "USD";
+
 }
