@@ -2,6 +2,7 @@ package com.financeai.dtos;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -28,6 +29,7 @@ public class TransaccionDTO {
 
     @NotNull(message = "El valor no puede ser nulo")
     @Positive(message = "El valor debe ser mayor a cero")
+    @JsonAlias({"valor", "monto"})
     private Double monto;
 
     private Long id;

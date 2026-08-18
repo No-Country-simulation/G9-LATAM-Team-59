@@ -78,11 +78,11 @@ export function enviarTransacciones() {
     const valorEl = item.querySelector(".valor");
     const descripcion = descripcionEl ? descripcionEl.value : "";
     const valor = valorEl ? Number(valorEl.value || 0) : 0;
-    transacciones.push({ descripcion: descripcion, valor: valor });
+    transacciones.push({ descripcion: descripcion, monto: valor, valor: valor });
   });
 
-  const payload = transacciones;
-  console.log("JSON a enviar (array):", payload);
+  const payload = { transacciones: transacciones };
+  console.log("JSON a enviar:", payload);
 
   const settings = getBackendSettings("/api/clasificar-transacciones");
   if (settings.useBackend) {
@@ -158,7 +158,12 @@ export function enviarJSONPuro() {
 
   const settings = getBackendSettings("/api/clasificar-transacciones");
   if (settings.useBackend) {
-    fetchBackend(settings.endpoint, parsed, "resultadoClasificacion");
+    const payloadBackend = Array.isArray(parsed)
+      ? { transacciones: parsed.map(item => ({ descripcion: item.descripcion, monto: item.monto || item.valor || 0 })) }
+      : parsed.transacciones
+        ? parsed
+        : { transacciones: [parsed] };
+    fetchBackend(settings.endpoint, payloadBackend, "resultadoClasificacion");
     return;
   }
 

@@ -22,6 +22,7 @@ function getTransaccionesAnalisis() {
     const valorEl = item.querySelector(".valor-analisis");
     return {
       descripcion: descripcionEl ? descripcionEl.value : "",
+      monto: valorEl ? Number(valorEl.value || 0) : 0,
       valor: valorEl ? Number(valorEl.value || 0) : 0,
     };
   });
