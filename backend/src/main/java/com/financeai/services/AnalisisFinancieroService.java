@@ -220,9 +220,11 @@ public class AnalisisFinancieroService {
 
             for (Transaccion transaccion : analisis.getTransacciones()) {
                 TransaccionDTO transaccionDTO = new TransaccionDTO();
+                transaccionDTO.setId(transaccion.getId());
                 transaccionDTO.setDescripcion(transaccion.getDescripcion());
                 transaccionDTO.setMoneda(transaccion.getMoneda());
                 transaccionDTO.setMonto(transaccion.getMonto());
+                transaccionDTO.setFechaSubida(transaccion.getFechaHoraRegistro());
 
                 transaccionesDTO.add(transaccionDTO);
             }

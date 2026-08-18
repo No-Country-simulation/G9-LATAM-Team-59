@@ -40,7 +40,7 @@ public class GestionarTransaccionesService {
         String categoria = clasificarTransaccionService.clasificarTransaccion(transaccionDTO);
 
         Transaccion transaccion = new Transaccion();
-        transaccion.setFechaHoraRegistro(LocalDateTime.now());
+        transaccion.setFechaHoraRegistro(transaccionDTO.getFechaSubida() != null ? transaccionDTO.getFechaSubida() : LocalDateTime.now());
         transaccion.setDescripcion(transaccionDTO.getDescripcion());
         transaccion.setMonto(transaccionDTO.getMonto());
         transaccion.setCategoria(categoria);
@@ -57,6 +57,10 @@ public class GestionarTransaccionesService {
         respuesta.setFechaSubida(transaccion.getFechaHoraRegistro());
 
         return respuesta;
+    }
+
+    private TransaccionDTO mapearATransaccionDTO(Transaccion t) {
+        return new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda(), t.getFechaHoraRegistro());
     }
 
     @Transactional(readOnly = true)
@@ -77,30 +81,30 @@ public class GestionarTransaccionesService {
 
         if (fechaHoraInicio == null && fechaHoraHasta == null) {
             return transaccionRepository.buscarTransacciones(username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
+            .map(this::mapearATransaccionDTO)
             .toList();
         }
 
         if (fechaHoraInicio != null && fechaHoraHasta != null) {
             return transaccionRepository.buscarTransaccionesEntre(fechaHoraInicio, fechaHoraHasta, username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
+            .map(this::mapearATransaccionDTO)
             .toList();
         }
 
         if (fechaHoraInicio != null) {
             return transaccionRepository.buscarTransaccionesDesde(fechaHoraInicio, username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
+            .map(this::mapearATransaccionDTO)
             .toList();
         }
 
         if (fechaHoraHasta != null) {
             return transaccionRepository.buscarTransaccionesHasta(fechaHoraHasta, username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
+            .map(this::mapearATransaccionDTO)
             .toList();
         }
 
         return transaccionRepository.buscarTransacciones(username).stream()
-            .map(t -> new TransaccionDTO(t.getDescripcion(), t.getMonto(), t.getId(), t.getMoneda()))
+            .map(this::mapearATransaccionDTO)
             .toList();
     }
 
