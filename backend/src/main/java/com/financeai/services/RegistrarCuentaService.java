@@ -33,7 +33,6 @@ public class RegistrarCuentaService {
         newUser.setUsername(usuario.username());
         newUser.setEmail(usuario.email());
         newUser.setPassword(passwordEncoder.encode(usuario.password()));
-        
         userRepository.save(newUser);
         
         return new LoginResponseDTO(newUser.getId(), newUser.getUsername(), newUser.getEmail(), "Cuenta registrada exitosamente");

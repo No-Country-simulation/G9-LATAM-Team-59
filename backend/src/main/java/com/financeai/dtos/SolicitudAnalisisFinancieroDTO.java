@@ -36,4 +36,7 @@ public class SolicitudAnalisisFinancieroDTO {
     @NotEmpty(message = "Se necesita una o más transacciones")
     @Valid
     private List<TransaccionDTO> transacciones;
+
+    @JsonProperty("moneda_ingreso_mensual")
+    private String monedaIngresoMensual = "USD";
 }

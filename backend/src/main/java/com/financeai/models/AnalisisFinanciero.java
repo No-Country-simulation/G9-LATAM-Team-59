@@ -75,4 +75,6 @@ public class AnalisisFinanciero {
     @Column(nullable = false)
     private String recomendaciones;
 
+    @Builder.Default
+    private String monedaIngresoMensual = "USD";
 }

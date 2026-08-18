@@ -44,5 +44,4 @@ public class Usuario {
     @JoinColumn(name = "usuario_id")
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<AnalisisFinanciero> analisisFinancieros = new ArrayList<>();
-
 }

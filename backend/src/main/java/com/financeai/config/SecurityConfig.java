@@ -34,8 +34,10 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/currency/**").permitAll()
                 .requestMatchers("/api/analisis-financiero").permitAll()
                 .requestMatchers("/api/clasificar-transacciones").permitAll()
+                .requestMatchers("/api/monedas").permitAll()
                 .anyRequest().authenticated())
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();

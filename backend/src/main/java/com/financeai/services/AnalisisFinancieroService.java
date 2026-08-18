@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.financeai.config.exceptions.ExcepcionEntidadNoEncontrada;
+import com.financeai.dtos.AnalisisFinancieroDTO;
 import com.financeai.dtos.RespuestaAnalisisFinancieroDTO;
 import com.financeai.dtos.SolicitudAnalisisFinancieroDTO;
 import com.financeai.dtos.SolicitudAnalisisFinancieroHistoricoDTO;
 import com.financeai.dtos.SolicitudAnalisisModeloDTO;
 import com.financeai.dtos.SolicitudClasificarTransaccionesDTO;
 import com.financeai.dtos.TransaccionDTO;
+import com.financeai.integrations.CurrencyAdapter;
 import com.financeai.integrations.FinanceAiModelAdapter;
 import com.financeai.models.AnalisisFinanciero;
 import com.financeai.models.Transaccion;
@@ -35,6 +37,7 @@ public class AnalisisFinancieroService {
     final private FinanceAiModelAdapter modelAdapter;
     final private ClasificarTransaccionService clasificarTransaccionService;
     private final TransaccionRepository transaccionRepository;
+    private final CurrencyAdapter currencyAdapter;
 
     public RespuestaAnalisisFinancieroDTO realizarAnalisisFinanciero(SolicitudAnalisisFinancieroDTO dto) {
         validarSolicitud(dto);
@@ -48,13 +51,21 @@ public class AnalisisFinancieroService {
         Double gastoTotal = 0.0;
 
         for(TransaccionDTO transaccionDTO : transacciones) {
-            gastoTotal += transaccionDTO.getMonto();
+            
+            String moneda = transaccionDTO.getMoneda();
+
+            Double rate = currencyAdapter.getConversionRate(moneda, "USD").rate();
+
+            gastoTotal += transaccionDTO.getMonto()*rate;
         }
 
-        
+        String monedaIngresoMensual = dto.getMonedaIngresoMensual();
+
+        Double rateIngresoMensual = currencyAdapter.getConversionRate(monedaIngresoMensual, "USD").rate();
+
         SolicitudAnalisisModeloDTO dtoModelo = new SolicitudAnalisisModeloDTO(
                 dto.getFrecuenciaAhorro(),
-                dto.getIngresoMensual(),
+                dto.getIngresoMensual()*rateIngresoMensual,
                 dto.getNivelEndeudamiento(),
                 gastoTotal
         );
@@ -125,13 +136,20 @@ public class AnalisisFinancieroService {
         Double gastoTotal = 0.0;
 
         for (Transaccion transaccion : transacciones) {
-            gastoTotal += transaccion.getMonto();
-            resumenGastos.merge(transaccion.getCategoria(), transaccion.getMonto(), Double::sum);
+
+            String moneda = transaccion.getMoneda();
+            Double rate = currencyAdapter.getConversionRate(moneda, "USD").rate();
+            gastoTotal += transaccion.getMonto()*rate;
+            resumenGastos.merge(transaccion.getCategoria(), transaccion.getMonto()*rate, Double::sum);
         }
+
+        String monedaIngresoMensual = dto.getMonedaIngresoMensual();
+
+        Double rateIngresoMensual = currencyAdapter.getConversionRate(monedaIngresoMensual, "USD").rate();
 
         SolicitudAnalisisModeloDTO dtoModelo = new SolicitudAnalisisModeloDTO(
                 dto.getFrecuenciaAhorro(),
-                dto.getIngresoMensual(),
+                dto.getIngresoMensual()*rateIngresoMensual,
                 dto.getNivelEndeudamiento(),
                 gastoTotal
         );
@@ -175,7 +193,7 @@ public class AnalisisFinancieroService {
     } 
 
    
-    public List<RespuestaAnalisisFinancieroDTO> obtenerHistorialAnalisisFinanciero() {
+    public List<AnalisisFinancieroDTO> obtenerHistorialAnalisisFinanciero() {
         Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (usuario == null) throw new ExcepcionEntidadNoEncontrada("Usuario");
@@ -184,14 +202,33 @@ public class AnalisisFinancieroService {
                 .orElseThrow(() -> new ExcepcionEntidadNoEncontrada("Usuario"));
 
         List<AnalisisFinanciero> analisisFinancieros = usuario.getAnalisisFinancieros();
-        List<RespuestaAnalisisFinancieroDTO> historial = new ArrayList<>();
+        List<AnalisisFinancieroDTO> historial = new ArrayList<>();
 
         for (AnalisisFinanciero analisis : analisisFinancieros) {
-            RespuestaAnalisisFinancieroDTO dto = new RespuestaAnalisisFinancieroDTO();
+            AnalisisFinancieroDTO dto = new AnalisisFinancieroDTO();
             dto.setPerfilFinanciero(analisis.getPerfilFinanciero());
             dto.setProbabilidad(analisis.getProbabilidad());
             dto.setResumenGastos(analisis.getResumenGastos());
             dto.setRecomendaciones(analisis.getRecomendaciones());
+            dto.setMonedaIngresoMensual(analisis.getMonedaIngresoMensual());
+            dto.setFechaRealizacion(analisis.getFechaRealizacion());
+            dto.setIngresoMensual(analisis.getIngresoMensual());
+            dto.setFrecuenciaAhorro(analisis.getFrecuenciaAhorro());
+            dto.setNivelEndeudamiento(analisis.getNivelEndeudamiento());
+
+            List<TransaccionDTO> transaccionesDTO = new ArrayList<>();
+
+            for (Transaccion transaccion : analisis.getTransacciones()) {
+                TransaccionDTO transaccionDTO = new TransaccionDTO();
+                transaccionDTO.setDescripcion(transaccion.getDescripcion());
+                transaccionDTO.setMoneda(transaccion.getMoneda());
+                transaccionDTO.setMonto(transaccion.getMonto());
+
+                transaccionesDTO.add(transaccionDTO);
+            }
+
+            dto.setTransacciones(transaccionesDTO);
+
             historial.add(dto);
         }
 

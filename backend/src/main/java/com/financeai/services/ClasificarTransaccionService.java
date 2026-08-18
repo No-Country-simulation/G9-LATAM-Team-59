@@ -10,6 +10,7 @@ import com.financeai.dtos.RespuestaClasificarTransaccionesDTO;
 import com.financeai.dtos.SolicitudClasificarTransaccionesDTO;
 import com.financeai.dtos.TransaccionClasificadaDTO;
 import com.financeai.dtos.TransaccionDTO;
+import com.financeai.integrations.CurrencyAdapter;
 import com.financeai.integrations.FinanceAiModelAdapter;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class ClasificarTransaccionService {
 
     private final FinanceAiModelAdapter modelAdapter;
+    private final CurrencyAdapter currencyAdapter;
 
     public RespuestaClasificarTransaccionesDTO clasificarTransacciones(SolicitudClasificarTransaccionesDTO dto) {
         
@@ -26,8 +28,14 @@ public class ClasificarTransaccionService {
         Map<String, Double> resumenGastos = new HashMap<>();
 
         for (TransaccionDTO transaccion : transacciones) {
+            
+            String moneda = transaccion.getMoneda();
+
+            Double rate = currencyAdapter.getConversionRate(moneda, "USD").rate();
+
             String categoria = clasificarTransaccion(transaccion);
-            resumenGastos.merge(categoria, transaccion.getMonto(), Double::sum);
+            
+            resumenGastos.merge(categoria, transaccion.getMonto()*rate, Double::sum);
         }
 
         RespuestaClasificarTransaccionesDTO respuesta = new RespuestaClasificarTransaccionesDTO(resumenGastos);
@@ -36,7 +44,7 @@ public class ClasificarTransaccionService {
     }
 
     public String clasificarTransaccion(TransaccionDTO transaccionDTO) {
-            
+
         TransaccionClasificadaDTO modelResponse = modelAdapter.conectarModeloFinanceAI(
                 "/api/clasificacion", 
                 transaccionDTO, 

@@ -33,4 +33,6 @@ public class Transaccion {
 
     @Column(nullable = false)
     private String categoria;
+
+    private String moneda = "USD";
 }
