@@ -1,6 +1,19 @@
 import { autoResize } from "./utils.js";
 
 const AUTH_STORAGE_KEY = "smartwallet_auth";
+const RUTAS_PROTEGIDAS = [
+  "analisis_historico.html",
+  "registrar_transaccion.html",
+  "ver_transacciones.html",
+];
+
+function obtenerRutaActual() {
+  return window.location.pathname.split("/").pop() || "index.html";
+}
+
+export function esRutaProtegidaActual() {
+  return RUTAS_PROTEGIDAS.includes(obtenerRutaActual());
+}
 
 function normalizarSesion(authData) {
   if (!authData) return null;
@@ -97,9 +110,18 @@ export function renderHeader() {
 
   container.innerHTML = `
     <nav class="nav">
-      <a class="nav-link" href="../html/index.html">SMART WALLET</a>
-      <a class="nav-link" href="../html/clasificacion.html">Clasificación de transacciones</a>
-      <a class="nav-link" href="../html/analisis.html">Análisis financiero</a>
+      <a class="nav-link brand-link" href="../html/index.html">SW</a>
+      <a class="nav-link" href="../html/clasificacion.html">Clasificación</a>
+      <a class="nav-link" href="../html/analisis.html">Análisis</a>
+      ${
+        isLoggedIn
+          ? `
+            <a class="nav-link" href="../html/analisis_historico.html">Histórico</a>
+            <a class="nav-link" href="../html/registrar_transaccion.html">Registrar transacción</a>
+            <a class="nav-link" href="../html/ver_transacciones.html">Ver transacciones</a>
+          `
+          : ""
+      }
       ${
         isLoggedIn
           ? `
@@ -109,23 +131,32 @@ export function renderHeader() {
             </div>
           `
           : `
-            <a class="nav-link auth-link" href="../html/registrar_cuenta.html">Registrar Cuenta</a>
-            <a class="nav-link auth-link" href="../html/iniciar_sesion.html">Iniciar Sesión</a>
+            <div class="ms-auto d-flex align-items-center gap-2">
+              <a class="nav-link auth-link" href="../html/registrar_cuenta.html">Registrar</a>
+              <a class="nav-link auth-link" href="../html/iniciar_sesion.html">Login</a>
+            </div>
           `
       }
     </nav>
   `;
 }
 
+function aplicarVisibilidadRutasProtegidas() {
+  const isLoggedIn = esAutenticado();
+  document.querySelectorAll("[data-protected='true']").forEach((el) => {
+    el.style.display = isLoggedIn ? "" : "none";
+  });
+}
+
 export function actualizarNavbarAuth() {
   renderHeader();
+  aplicarVisibilidadRutasProtegidas();
 }
 
 export function cerrarSesion() {
   limpiarSesion();
   actualizarNavbarAuth();
-  const rutaActual = window.location.pathname.split("/").pop() || "index.html";
-  if (["clasificacion.html", "analisis.html"].includes(rutaActual)) {
+  if (esRutaProtegidaActual()) {
     window.location.href = "iniciar_sesion.html";
   } else {
     window.location.reload();
@@ -133,7 +164,7 @@ export function cerrarSesion() {
 }
 
 export function protegerRuta() {
-  const rutaActual = window.location.pathname.split("/").pop() || "index.html";
+  const rutaActual = obtenerRutaActual();
   const rutasPublicasAuth = ["iniciar_sesion.html", "registrar_cuenta.html"];
 
   if (rutasPublicasAuth.includes(rutaActual) && esAutenticado()) {
@@ -141,12 +172,20 @@ export function protegerRuta() {
     return false;
   }
 
+  if (esRutaProtegidaActual() && !esAutenticado()) {
+    window.location.href = "iniciar_sesion.html";
+    return false;
+  }
+
   return true;
 }
 
 export function inicializarAuthFrontend() {
+  const puedeContinuar = protegerRuta();
+  if (!puedeContinuar) {
+    return;
+  }
   actualizarNavbarAuth();
-  protegerRuta();
 }
 
 export function limpiarMensaje() {

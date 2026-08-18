@@ -1,59 +1,24 @@
 import {
-  autoResize,
+  buildCurrencyOptionsHtml,
   fetchBackend,
   getBackendSettings,
-  applyNumericMask,
+  getDefaultCurrency,
 } from "./utils.js";
-
-export const DATOS_PRUEBA_CLASIFICACION = [
-  { descripcion: "Supermercado Carrefour", valor: 420.0 },
-  { descripcion: "Carga de nafta YPF", valor: 300.0 },
-  { descripcion: "Suscripción Netflix", valor: 40.0 },
-];
-
-export function cargarDatosPruebaClasificacion() {
-  resetClasificacionForm();
-  const contenedor = document.getElementById("transacciones");
-  contenedor.innerHTML = "";
-  DATOS_PRUEBA_CLASIFICACION.forEach(function (item) {
-    const div = document.createElement("div");
-    div.className = "transaccion";
-    div.innerHTML =
-      "<label>Descripción de la transacción</label>" +
-      '<input type="text" class="descripcion form-control form-control-sm mb-3" value="' +
-      (item.descripcion || "").replace(/"/g, "&quot;") +
-      '" />' +
-      "<label>Valor de la transacción</label>" +
-      '<input type="number" class="valor form-control form-control-sm numeric-only" inputmode="numeric" pattern="[0-9]*" value="' +
-      item.valor +
-      '" />' +
-      "<hr />";
-    contenedor.appendChild(div);
-    div.querySelectorAll("input.numeric-only").forEach(applyNumericMask);
-  });
-}
-
-export function cargarDatosPruebaJSONClasificacion() {
-  const jsonArea = document.getElementById("jsonPuro");
-  if (jsonArea) {
-    jsonArea.value = JSON.stringify(DATOS_PRUEBA_CLASIFICACION, null, 2);
-    autoResize(jsonArea);
-  }
-}
 
 export function agregarTransaccion() {
   const contenedor = document.getElementById("transacciones");
   const div = document.createElement("div");
-  div.className = "transaccion";
+  div.className = "transaccion mb-3";
   div.innerHTML =
-    "<label>Descripción de la transacción</label>" +
-    '<input type="text" class="descripcion form-control form-control-sm mb-3" />' +
-    "<label>Valor de la transacción</label>" +
-    '<input type="number" class="valor form-control form-control-sm mb-3 numeric-only" inputmode="numeric" pattern="[0-9]*" />' +
+    '<label class="form-label">Descripción de la transacción</label>' +
+    '<input type="text" class="descripcion form-control form-control-sm mb-3" style="border: 2px solid #64748b !important; box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04) !important;" />' +
+    '<label class="form-label">Monto de la transacción</label>' +
+    '<input type="number" class="monto form-control form-control-sm mb-3" style="border: 2px solid #64748b !important; box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04) !important;" min="0" step="0.01" />' +
+    '<label class="form-label">Moneda</label>' +
+    `<select class="moneda currency-select form-select form-select-sm mb-3">${buildCurrencyOptionsHtml(getDefaultCurrency())}</select>` +
     "<hr />";
 
   contenedor.appendChild(div);
-  div.querySelectorAll("input.numeric-only").forEach(applyNumericMask);
 }
 
 export function eliminarTransaccion() {
@@ -64,146 +29,47 @@ export function eliminarTransaccion() {
   } else if (items.length === 1) {
     const first = items[0];
     const desc = first.querySelector(".descripcion");
-    const val = first.querySelector(".valor");
+    const val = first.querySelector(".monto");
+    const moneda = first.querySelector(".moneda");
     if (desc) desc.value = "";
     if (val) val.value = "";
+    if (moneda) moneda.value = getDefaultCurrency();
   }
 }
 
 export function enviarTransacciones() {
   const items = document.querySelectorAll("#transacciones .transaccion");
   const transacciones = [];
+
   items.forEach(function (item) {
     const descripcionEl = item.querySelector(".descripcion");
-    const valorEl = item.querySelector(".valor");
+    const montoEl = item.querySelector(".monto");
+    const monedaEl = item.querySelector(".moneda");
     const descripcion = descripcionEl ? descripcionEl.value : "";
-    const valor = valorEl ? Number(valorEl.value || 0) : 0;
-    transacciones.push({ descripcion: descripcion, valor: valor });
+    const monto = montoEl ? Number(montoEl.value || 0) : 0;
+    const moneda = monedaEl ? String(monedaEl.value || "") : "";
+
+    transacciones.push({ descripcion, monto, moneda });
   });
 
-  const payload = transacciones;
-  console.log("JSON a enviar (array):", payload);
-
+  const payload = { transacciones };
   const settings = getBackendSettings("/api/clasificar-transacciones");
-  if (settings.useBackend) {
-    fetchBackend(settings.endpoint, payload, "resultadoClasificacion");
-    return;
-  }
-
-  const mockResponse = {};
-  let alimentacion = 0;
-  let transporte = 0;
-
-  payload.forEach(function (item) {
-    const desc = (item.descripcion || "").toLowerCase();
-    const val = Number(item.valor || 0);
-    if (/(supermercado|carrefour|mercad|almacen|super)/.test(desc)) {
-      alimentacion += val;
-    } else if (/(nafta|ypf|gasolina|gasol|estacion)/.test(desc)) {
-      transporte += val;
-    } else {
-      mockResponse.otros = (mockResponse.otros || 0) + val;
-    }
-  });
-
-  if (alimentacion > 0) mockResponse.alimentacion = alimentacion;
-  if (transporte > 0) mockResponse.transporte = transporte;
-
-  console.log("Response (HTTP 200 OK)");
-  console.log(mockResponse);
-
-  mostrarResultadoClasificacion(mockResponse);
-
-  const contenedor = document.getElementById("transacciones");
-  if (contenedor) {
-    contenedor.innerHTML = `
-      <div class="transaccion">
-        <label>Descripción de la transacción</label>
-        <input type="text" class="descripcion form-control form-control-sm mb-3" />
-
-        <label>Valor de la transacción</label>
-        <input type="number" class="valor form-control form-control-sm numeric-only" inputmode="numeric" pattern="[0-9]*" />
-        <hr />
-      </div>
-    `;
-  }
-}
-
-export function enviarJSONPuro() {
-  const jsonArea = document.getElementById("jsonPuro");
-  if (!jsonArea) {
-    console.error("No se encontró el campo de JSON puro.");
-    return;
-  }
-
-  let parsed;
-  try {
-    parsed = JSON.parse(jsonArea.value);
-  } catch (e) {
-    console.error("JSON inválido:", e.message);
-    const resultContainer = document.getElementById(
-      "resultadoContainerClasificacion",
-    );
-    const resultEl = document.getElementById("resultadoClasificacion");
-    if (resultContainer) {
-      resultContainer.style.display = "block";
-    }
-    if (resultEl) {
-      resultEl.style.color = "#c82333";
-      resultEl.textContent = "JSON inválido: " + e.message;
-      resultEl.style.display = "block";
-    }
-    return;
-  }
-
-  const settings = getBackendSettings("/api/clasificar-transacciones");
-  if (settings.useBackend) {
-    fetchBackend(settings.endpoint, parsed, "resultadoClasificacion");
-    return;
-  }
-
-  const transacciones = Array.isArray(parsed)
-    ? parsed
-    : Array.isArray(parsed.transacciones)
-      ? parsed.transacciones
-      : [];
-
-  console.log("JSON a enviar (array):", transacciones);
-
-  const mockResponse = {};
-  let alimentacion = 0;
-  let transporte = 0;
-
-  transacciones.forEach(function (item) {
-    const desc = ((item.descripcion || "") + "").toLowerCase();
-    const val = Number(item.valor || 0);
-    if (/(supermercado|carrefour|mercad|almacen|super)/.test(desc)) {
-      alimentacion += val;
-    } else if (/(nafta|ypf|gasolina|gasol|estacion)/.test(desc)) {
-      transporte += val;
-    } else {
-      mockResponse.otros = (mockResponse.otros || 0) + val;
-    }
-  });
-
-  if (alimentacion > 0) mockResponse.alimentacion = alimentacion;
-  if (transporte > 0) mockResponse.transporte = transporte;
-
-  console.log("Response (HTTP 200 OK)");
-  console.log(mockResponse);
-  mostrarResultadoClasificacion(mockResponse);
+  fetchBackend(settings.endpoint, payload, "resultadoClasificacion");
 }
 
 export function resetClasificacionForm() {
   const contenedor = document.getElementById("transacciones");
   if (contenedor) {
     contenedor.innerHTML = `
-      <div class="transaccion">
-        <label>Descripción de la transacción</label>
+      <div class="transaccion mb-3">
+        <label class="form-label">Descripción de la transacción</label>
         <input type="text" class="descripcion form-control form-control-sm mb-3" />
 
-        <label>Valor de la transacción</label>
-        <input type="number" class="valor form-control form-control-sm numeric-only" inputmode="numeric" pattern="[0-9]*" />
+        <label class="form-label">Monto de la transacción</label>
+        <input type="number" class="monto form-control form-control-sm mb-3" min="0" step="0.01" />
+
+        <label class="form-label">Moneda</label>
+        <select class="moneda currency-select form-select form-select-sm mb-3">${buildCurrencyOptionsHtml(getDefaultCurrency())}</select>
         <hr />
       </div>
     `;
@@ -222,42 +88,22 @@ export function resetClasificacionForm() {
   }
 }
 
-export function resetJSONPuro() {
-  const jsonArea = document.getElementById("jsonPuro");
-  if (jsonArea) {
-    jsonArea.value = "";
-    autoResize(jsonArea);
-  }
-
-  const resultContainer = document.getElementById(
-    "resultadoContainerClasificacion",
-  );
-  const resultEl = document.getElementById("resultadoClasificacion");
-  if (resultContainer) {
-    resultContainer.style.display = "none";
-  }
-  if (resultEl) {
-    resultEl.style.display = "none";
-    resultEl.textContent = "";
-  }
-}
-
-export function mostrarResultadoClasificacion(mockResponse) {
+export function mostrarResultadoClasificacion(responseData) {
   const resultContainer = document.getElementById(
     "resultadoContainerClasificacion",
   );
   const resultEl = document.getElementById("resultadoClasificacion");
   if (!resultEl || !resultContainer) return;
   if (
-    !mockResponse ||
-    (typeof mockResponse === "object" && !Object.keys(mockResponse).length)
+    !responseData ||
+    (typeof responseData === "object" && !Object.keys(responseData).length)
   ) {
     resultContainer.style.display = "none";
     resultEl.style.display = "none";
     resultEl.textContent = "";
     return;
   }
-  resultEl.textContent = JSON.stringify(mockResponse, null, 2);
+  resultEl.textContent = JSON.stringify(responseData, null, 2);
   resultEl.style.display = "block";
   resultEl.style.color = "#212529";
   resultContainer.style.display = "block";

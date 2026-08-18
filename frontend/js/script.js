@@ -14,31 +14,36 @@ import {
   iniciarSesion,
 } from "./auth.js";
 import {
-  DATOS_PRUEBA_CLASIFICACION,
-  cargarDatosPruebaClasificacion,
-  cargarDatosPruebaJSONClasificacion,
   agregarTransaccion,
   eliminarTransaccion,
   enviarTransacciones,
-  enviarJSONPuro,
   resetClasificacionForm,
-  resetJSONPuro,
   mostrarResultadoClasificacion,
 } from "./classification.js";
 import {
-  DATOS_PRUEBA_ANALISIS,
-  cargarDatosPruebaAnalisis,
-  cargarDatosPruebaJSONAnalisis,
   enviarDatos,
-  crearMockResponseAnalisis,
   mostrarResultadoAnalisis,
   resetAnalisisForm,
-  resetJSONPuroAnalisis,
-  enviarJSONPuroAnalisis,
   agregarTransaccionAnalisis,
   eliminarTransaccionAnalisis,
 } from "./analysis.js";
 import {
+  inicializarAnalisisHistorico,
+  resetAnalisisHistoricoForm,
+  enviarAnalisisHistoricoMisTransacciones,
+} from "./historical-analysis.js";
+import {
+  resetRegistroTransaccionForm,
+  registrarTransaccion,
+} from "./register-transaction.js";
+import {
+  inicializarVistaTransacciones,
+  limpiarFiltrosTransacciones,
+  verTransaccionesFiltradas,
+  eliminarTransaccionDesdeVista,
+} from "./view-transactions.js";
+import {
+  bootstrapSupportedCurrencies,
   autoResize,
   setupNumericOnlyInputs,
   getBackendSettings,
@@ -61,25 +66,26 @@ window.limpiarMensaje = limpiarMensaje;
 window.mostrarMensaje = mostrarMensaje;
 window.registrarCuenta = registrarCuenta;
 window.iniciarSesion = iniciarSesion;
-window.cargarDatosPruebaClasificacion = cargarDatosPruebaClasificacion;
-window.cargarDatosPruebaJSONClasificacion = cargarDatosPruebaJSONClasificacion;
 window.agregarTransaccion = agregarTransaccion;
 window.eliminarTransaccion = eliminarTransaccion;
 window.enviarTransacciones = enviarTransacciones;
-window.enviarJSONPuro = enviarJSONPuro;
 window.resetClasificacionForm = resetClasificacionForm;
-window.resetJSONPuro = resetJSONPuro;
 window.mostrarResultadoClasificacion = mostrarResultadoClasificacion;
-window.cargarDatosPruebaAnalisis = cargarDatosPruebaAnalisis;
-window.cargarDatosPruebaJSONAnalisis = cargarDatosPruebaJSONAnalisis;
 window.enviarDatos = enviarDatos;
-window.crearMockResponseAnalisis = crearMockResponseAnalisis;
 window.mostrarResultadoAnalisis = mostrarResultadoAnalisis;
 window.resetAnalisisForm = resetAnalisisForm;
-window.resetJSONPuroAnalisis = resetJSONPuroAnalisis;
-window.enviarJSONPuroAnalisis = enviarJSONPuroAnalisis;
 window.agregarTransaccionAnalisis = agregarTransaccionAnalisis;
 window.eliminarTransaccionAnalisis = eliminarTransaccionAnalisis;
+window.inicializarAnalisisHistorico = inicializarAnalisisHistorico;
+window.resetAnalisisHistoricoForm = resetAnalisisHistoricoForm;
+window.enviarAnalisisHistoricoMisTransacciones =
+  enviarAnalisisHistoricoMisTransacciones;
+window.resetRegistroTransaccionForm = resetRegistroTransaccionForm;
+window.registrarTransaccion = registrarTransaccion;
+window.inicializarVistaTransacciones = inicializarVistaTransacciones;
+window.limpiarFiltrosTransacciones = limpiarFiltrosTransacciones;
+window.verTransaccionesFiltradas = verTransaccionesFiltradas;
+window.eliminarTransaccionDesdeVista = eliminarTransaccionDesdeVista;
 window.autoResize = autoResize;
 window.setupNumericOnlyInputs = setupNumericOnlyInputs;
 window.getBackendSettings = getBackendSettings;
@@ -87,13 +93,20 @@ window.buildBackendUrl = buildBackendUrl;
 window.parseResponseBody = parseResponseBody;
 window.fetchBackend = fetchBackend;
 window.applyNumericMask = applyNumericMask;
+window.bootstrapSupportedCurrencies = bootstrapSupportedCurrencies;
 
 window.addEventListener("DOMContentLoaded", function () {
+  bootstrapSupportedCurrencies().catch(() => {});
   setupNumericOnlyInputs();
   inicializarAuthFrontend();
+  inicializarAnalisisHistorico();
+  inicializarVistaTransacciones();
 });
 
 if (document.readyState !== "loading") {
+  bootstrapSupportedCurrencies().catch(() => {});
   setupNumericOnlyInputs();
   inicializarAuthFrontend();
+  inicializarAnalisisHistorico();
+  inicializarVistaTransacciones();
 }

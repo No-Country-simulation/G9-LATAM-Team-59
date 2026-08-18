@@ -1,15 +1,9 @@
-import { autoResize, fetchBackend, getBackendSettings } from "./utils.js";
-
-export const DATOS_PRUEBA_ANALISIS = {
-  ingreso_mensual: 5000,
-  nivel_endeudamiento: 25,
-  frecuencia_ahorro: "Media",
-  transacciones: [
-    { descripcion: "Supermercado Carrefour", valor: 420.0 },
-    { descripcion: "Carga de nafta YPF", valor: 300.0 },
-    { descripcion: "Suscripción Netflix", valor: 40.0 },
-  ],
-};
+import {
+  buildCurrencyOptionsHtml,
+  fetchBackend,
+  getBackendSettings,
+  getDefaultCurrency,
+} from "./utils.js";
 
 function getTransaccionesAnalisis() {
   const contenedor = document.getElementById("transaccionesAnalisis");
@@ -19,53 +13,14 @@ function getTransaccionesAnalisis() {
     contenedor.getElementsByClassName("transaccion-analisis"),
   ).map((item) => {
     const descripcionEl = item.querySelector(".descripcion-analisis");
-    const valorEl = item.querySelector(".valor-analisis");
+    const montoEl = item.querySelector(".monto-analisis");
+    const monedaEl = item.querySelector(".moneda-analisis");
     return {
       descripcion: descripcionEl ? descripcionEl.value : "",
-      valor: valorEl ? Number(valorEl.value || 0) : 0,
+      monto: montoEl ? Number(montoEl.value || 0) : 0,
+      moneda: monedaEl ? monedaEl.value : "USD",
     };
   });
-}
-
-export function cargarDatosPruebaAnalisis() {
-  resetAnalisisForm();
-  const ingresoEl = document.getElementById("ingreso");
-  const endeudamientoEl = document.getElementById("endeudamiento");
-  const ahorroEl = document.getElementById("ahorro");
-  const contenedor = document.getElementById("transaccionesAnalisis");
-
-  if (ingresoEl) ingresoEl.value = DATOS_PRUEBA_ANALISIS.ingreso_mensual;
-  if (endeudamientoEl) {
-    endeudamientoEl.value = DATOS_PRUEBA_ANALISIS.nivel_endeudamiento;
-  }
-  if (ahorroEl) ahorroEl.value = DATOS_PRUEBA_ANALISIS.frecuencia_ahorro;
-
-  if (contenedor) {
-    contenedor.innerHTML = "";
-    DATOS_PRUEBA_ANALISIS.transacciones.forEach((item) => {
-      const div = document.createElement("div");
-      div.className = "transaccion-analisis mb-3";
-      div.innerHTML =
-        '<label class="form-label">Descripción de la transacción</label>' +
-        '<input type="text" class="descripcion-analisis form-control form-control-sm mb-3" value="' +
-        (item.descripcion || "").replace(/"/g, "&quot;") +
-        '" />' +
-        '<label class="form-label">Valor</label>' +
-        '<input type="number" class="valor-analisis form-control form-control-sm mb-3 numeric-only" inputmode="numeric" pattern="[0-9]*" value="' +
-        (item.valor ?? "") +
-        '" />' +
-        "<hr />";
-      contenedor.appendChild(div);
-    });
-  }
-}
-
-export function cargarDatosPruebaJSONAnalisis() {
-  const jsonArea = document.getElementById("jsonPuroAnalisis");
-  if (jsonArea) {
-    jsonArea.value = JSON.stringify(DATOS_PRUEBA_ANALISIS, null, 2);
-    autoResize(jsonArea);
-  }
 }
 
 export function agregarTransaccionAnalisis() {
@@ -76,9 +31,11 @@ export function agregarTransaccionAnalisis() {
   div.className = "transaccion-analisis mb-3";
   div.innerHTML =
     '<label class="form-label">Descripción de la transacción</label>' +
-    '<input type="text" class="descripcion-analisis form-control form-control-sm mb-3" />' +
-    '<label class="form-label">Valor</label>' +
-    '<input type="number" class="valor-analisis form-control form-control-sm mb-3 numeric-only" inputmode="numeric" pattern="[0-9]*" />' +
+    '<input type="text" class="descripcion-analisis form-control form-control-sm mb-3" style="border: 2px solid #64748b !important; box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04) !important;" />' +
+    '<label class="form-label">Monto</label>' +
+    '<input type="number" class="monto-analisis form-control form-control-sm mb-3" style="border: 2px solid #64748b !important; box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04) !important;" min="0" step="0.01" />' +
+    '<label class="form-label">Moneda</label>' +
+    `<select class="moneda-analisis currency-select form-select form-select-sm mb-3">${buildCurrencyOptionsHtml(getDefaultCurrency())}</select>` +
     "<hr />";
   contenedor.appendChild(div);
 }
@@ -93,80 +50,30 @@ export function eliminarTransaccionAnalisis() {
   } else if (items.length === 1) {
     const first = items[0];
     const desc = first.querySelector(".descripcion-analisis");
-    const val = first.querySelector(".valor-analisis");
+    const val = first.querySelector(".monto-analisis");
+    const moneda = first.querySelector(".moneda-analisis");
     if (desc) desc.value = "";
     if (val) val.value = "";
+    if (moneda) moneda.value = getDefaultCurrency();
   }
 }
 
 export function enviarDatos() {
   const ingresoEl = document.getElementById("ingreso");
+  const monedaIngresoEl = document.getElementById("monedaIngresoMensual");
   const endeudamientoEl = document.getElementById("endeudamiento");
   const ahorroEl = document.getElementById("ahorro");
 
   const payload = {
     ingreso_mensual: Number(ingresoEl?.value || 0),
+    moneda_ingreso_mensual: monedaIngresoEl?.value || getDefaultCurrency(),
     nivel_endeudamiento: Number(endeudamientoEl?.value || 0),
     frecuencia_ahorro: ahorroEl?.value || "Nula",
     transacciones: getTransaccionesAnalisis(),
   };
 
   const settings = getBackendSettings("/api/analisis-financiero");
-  if (settings.useBackend) {
-    fetchBackend(settings.endpoint, payload, "resultadoAnalisis");
-    return;
-  }
-
-  const mockResponse = {
-    resumen:
-      "Tu perfil muestra un equilibrio razonable entre ingresos y gastos.",
-    riesgo: payload.nivel_endeudamiento > 35 ? "Alto" : "Moderado",
-    ahorro_recomendado: Math.max(0, payload.ingreso_mensual * 0.2),
-    gastos_totales: payload.transacciones.reduce(
-      (acc, item) => acc + Number(item.valor || 0),
-      0,
-    ),
-    recomendaciones: [
-      "Prioriza un fondo de emergencia mensual.",
-      "Reduce gastos recurrentes que no aporten valor.",
-    ],
-  };
-
-  mostrarResultadoAnalisis(mockResponse);
-}
-
-export function crearMockResponseAnalisis() {
-  return {
-    resumen:
-      "Tu perfil muestra un equilibrio razonable entre ingresos y gastos.",
-    riesgo: "Moderado",
-    ahorro_recomendado: 1000,
-    recomendaciones: ["Ahorra un porcentaje fijo cada mes."],
-  };
-}
-
-export function enviarJSONPuroAnalisis() {
-  const jsonArea = document.getElementById("jsonPuroAnalisis");
-  if (!jsonArea) return;
-
-  let parsed;
-  try {
-    parsed = JSON.parse(jsonArea.value);
-  } catch (error) {
-    mostrarResultadoAnalisis({ error: `JSON inválido: ${error.message}` });
-    return;
-  }
-
-  const settings = getBackendSettings("/api/analisis-financiero");
-  if (settings.useBackend) {
-    fetchBackend(settings.endpoint, parsed, "resultadoAnalisis");
-    return;
-  }
-
-  mostrarResultadoAnalisis({
-    resumen: "Datos recibidos desde JSON puro.",
-    payload: parsed,
-  });
+  fetchBackend(settings.endpoint, payload, "resultadoAnalisis");
 }
 
 export function resetAnalisisForm() {
@@ -175,31 +82,21 @@ export function resetAnalisisForm() {
     contenedor.innerHTML = `
       <div class="transaccion-analisis mb-3">
         <label class="form-label">Descripción de la transacción</label>
-        <input type="text" class="descripcion-analisis form-control form-control-sm mb-3" />
+        <input type="text" class="descripcion-analisis form-control form-control-sm mb-3" style="border: 2px solid #64748b !important; box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04) !important;" />
 
-        <label class="form-label">Valor</label>
-        <input type="number" class="valor-analisis form-control form-control-sm mb-3 numeric-only" inputmode="numeric" pattern="[0-9]*" />
+        <label class="form-label">Monto</label>
+        <input type="number" class="monto-analisis form-control form-control-sm mb-3" style="border: 2px solid #64748b !important; box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04) !important;" min="0" step="0.01" />
+
+        <label class="form-label">Moneda</label>
+        <select class="moneda-analisis currency-select form-select form-select-sm mb-3">${buildCurrencyOptionsHtml(getDefaultCurrency())}</select>
         <hr />
       </div>
     `;
   }
 
-  const result = document.getElementById("resultadoAnalisis");
-  if (result) {
-    result.style.display = "none";
-    result.querySelector("div")?.remove();
-    const content = document.createElement("div");
-    content.className = "p-3 rounded-3 bg-light shadow-sm";
-    content.style.whiteSpace = "pre-wrap";
-    result.appendChild(content);
-  }
-}
-
-export function resetJSONPuroAnalisis() {
-  const jsonArea = document.getElementById("jsonPuroAnalisis");
-  if (jsonArea) {
-    jsonArea.value = "";
-    autoResize(jsonArea);
+  const monedaIngresoEl = document.getElementById("monedaIngresoMensual");
+  if (monedaIngresoEl) {
+    monedaIngresoEl.value = getDefaultCurrency();
   }
 
   const result = document.getElementById("resultadoAnalisis");
@@ -213,7 +110,7 @@ export function resetJSONPuroAnalisis() {
   }
 }
 
-export function mostrarResultadoAnalisis(mockResponse) {
+export function mostrarResultadoAnalisis(responseData) {
   const result = document.getElementById("resultadoAnalisis");
   if (!result) return;
 
@@ -221,15 +118,15 @@ export function mostrarResultadoAnalisis(mockResponse) {
   if (!content) return;
 
   if (
-    !mockResponse ||
-    (typeof mockResponse === "object" && !Object.keys(mockResponse).length)
+    !responseData ||
+    (typeof responseData === "object" && !Object.keys(responseData).length)
   ) {
     result.style.display = "none";
     content.textContent = "";
     return;
   }
 
-  content.textContent = JSON.stringify(mockResponse, null, 2);
+  content.textContent = JSON.stringify(responseData, null, 2);
   result.style.display = "block";
   result.scrollIntoView({ behavior: "smooth", block: "center" });
 }
