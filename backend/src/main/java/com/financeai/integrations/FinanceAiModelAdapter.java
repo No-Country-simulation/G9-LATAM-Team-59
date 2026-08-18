@@ -25,8 +25,8 @@ public class FinanceAiModelAdapter {
         try {
             R respuesta = clienteHttp.post()
                                 .uri(endpoint)
-                                .body(solicitudBody)
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .body(solicitudBody)
                                 .retrieve()
                                 .body(claseRespuesta);
             return respuesta;

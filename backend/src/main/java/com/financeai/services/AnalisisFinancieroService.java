@@ -175,7 +175,9 @@ public class AnalisisFinancieroService {
         dtoRespuesta.setRecomendaciones(recomendaciones);
 
         AnalisisFinanciero analisisFinanciero = AnalisisFinanciero.builder()
+                                                    .fechaRealizacion(LocalDateTime.now())
                                                     .ingresoMensual(dto.getIngresoMensual())
+                                                    .monedaIngresoMensual(dto.getMonedaIngresoMensual() != null ? dto.getMonedaIngresoMensual() : "USD")
                                                     .frecuenciaAhorro(dto.getFrecuenciaAhorro())
                                                     .nivelEndeudamiento(dto.getNivelEndeudamiento())
                                                     .perfilFinanciero(dtoRespuesta.getPerfilFinanciero())
