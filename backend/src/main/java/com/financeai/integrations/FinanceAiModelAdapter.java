@@ -14,6 +14,10 @@ public class FinanceAiModelAdapter {
 
     public <S, R> R conectarModeloFinanceAI(String endpoint, S solicitudBody, Class<R> claseRespuesta) {
 
+        if (solicitudBody == null) {
+            throw new IllegalArgumentException("El cuerpo de la solicitud enviado al modelo no puede ser nulo.");
+        }
+
         RestClient clienteHttp = RestClient.builder()
                 .baseUrl(urlModelo)
                 .build();
