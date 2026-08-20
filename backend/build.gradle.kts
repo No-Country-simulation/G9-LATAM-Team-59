@@ -24,9 +24,6 @@ dependencies {
 	
 	implementation("org.springframework.boot:spring-boot-starter-security")
 
-	runtimeOnly("org.xerial:sqlite-jdbc")
-	implementation("org.hibernate.orm:hibernate-community-dialects:7.4.4.Final")
-
   	testImplementation("org.springframework.boot:spring-boot-starter-security-test")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
   	testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
@@ -44,6 +41,10 @@ dependencies {
 
 	implementation("org.springframework.boot:spring-boot-devtools:4.1.0")
 	runtimeOnly("org.joda:joda-money:2.0.3")
+
+    implementation("com.oracle.database.jdbc:ojdbc11:23.4.0.24.05")
+    implementation("com.oracle.database.security:oraclepki:23.4.0.24.05")
+
 }
 
 tasks.withType<Test> {

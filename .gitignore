@@ -281,3 +281,10 @@ public/
 .env.development
 *.env
 *.secrets
+
+# Oracle Wallet Secrets
+oracle_wallet/
+*.sso
+*.ora
+*.p12
+

@@ -1,6 +1,6 @@
 import { esRutaProtegidaActual, getAuthHeaders } from "./auth.js";
 
-export const BACKEND_BASE_URL = "localhost:8080";
+export const BACKEND_BASE_URL = "";
 export const BACKEND_PATH_ANALISIS = "/api/analisis-financiero";
 export const BACKEND_PATH_CLASIFICACION = "/api/clasificar-transacciones";
 const CURRENCIES_STORAGE_KEY = "smartwallet_supported_currencies";

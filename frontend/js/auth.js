@@ -223,7 +223,7 @@ export function registrarCuenta() {
 
   console.log("JSON enviado al Backend:", datos);
 
-  fetch("http://localhost:8080/api/auth/registrar-cuenta", {
+  fetch("/api/auth/registrar-cuenta", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -285,7 +285,7 @@ export function iniciarSesion() {
 
   console.log("JSON enviado al Backend:", datos);
 
-  fetch("http://localhost:8080/api/auth/login", {
+  fetch("/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
