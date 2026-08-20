@@ -4,7 +4,7 @@ services:
   # 1. Servidor de Inteligencia Artificial (Python + FastAPI)
   python-ia:
     build:
-      context: ./python/servidor_local_ia
+      context: ./python/servidor_local_py
       dockerfile: Dockerfile
     container_name: financeai-python-ia
     ports:
