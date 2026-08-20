@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # 1. Servidor de Inteligencia Artificial (Python + FastAPI)
+  python-ia:
+    build:
+      context: ./python/servidor_local_ia
+      dockerfile: Dockerfile
+    container_name: financeai-python-ia
+    ports:
+      - "8000:8000"
+    restart: always
+
+  # 2. Servidor Backend API REST (Java 21 + Spring Boot + Oracle DB)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: financeai-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - DATASCIENCE_API_BASE_URL=http://python-ia:8000
+    volumes:
+      # Monta la carpeta del Wallet descomprimido dentro de /app/wallet en el contenedor
+      - ./oracle_wallet:/app/wallet
+    depends_on:
+      - python-ia
+    restart: always
+
+  # 3. Servidor Frontend (NGINX + Archivos Estaticos + Reverse Proxy)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: financeai-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
