@@ -9,11 +9,11 @@ El proyecto clasifica gastos, evalúa perfiles financieros y genera recomendacio
 
 Construir un **MVP funcional** que permita:
 
-- ✅ Clasificar transacciones en categorías financieras.
-- 📊 Analizar el perfil financiero del usuario.
-- 💡 Generar recomendaciones de mejora.
+- ✅ Clasificar transacciones en categorías financieras mediante Machine Learning (NLP).
+- 📊 Analizar el perfil financiero del usuario utilizando modelos predictivos.
+- 💡 Generar recomendaciones de mejora personalizadas.
 - 🌐 Exponer los resultados mediante **endpoints REST**.
-- ☁️ Integrar el flujo con **Ciencia de Datos** y al menos un servicio de **OCI**.
+- ☁️ Desplegar e integrar la solución completa en **Oracle Cloud Infrastructure (OCI)** utilizando **Oracle Autonomous Database**.
 
 ---
 
@@ -21,29 +21,29 @@ Construir un **MVP funcional** que permita:
 
 El MVP se enfoca en un flujo simple de extremo a extremo:
 
-1. El usuario ingresa sus datos financieros.
-2. El frontend envía la información al backend.
-3. El backend valida, procesa y orquesta el análisis.
-4. El módulo de **Ciencia de Datos** clasifica y predice el perfil financiero.
-5. El backend responde con un **JSON unificado** que incluye el análisis y las recomendaciones.
+1. El usuario ingresa sus datos financieros y transacciones desde el Frontend.
+2. El frontend envía la información al backend (Spring Boot).
+3. El backend valida, procesa y orquesta la comunicación con el módulo de **Ciencia de Datos (Python)**.
+4. El servidor de Python realiza la inferencia con los modelos entrenados (`.pkl`) y devuelve la clasificación y predicción de perfil.
+5. El backend almacena la información en **Oracle Database** y responde al cliente con un **JSON unificado** que incluye el análisis y las recomendaciones.
 
 ---
 
 ## 🏗️ Arquitectura general
 
-| Capa　　　　　　　　　　 | Tecnología                  | Función                                                           |
-| ------------------------ | --------------------------- | ----------------------------------------------------------------- |
-| 🖥️ **Frontend**　　　　  | Interfaz simple             | Ingreso de datos y visualización de resultados.                   |
-| ⚙️ **Backend**　　　　　 | Spring Boot (API REST)      | Recepción, validación y orquestación del flujo.                   |
-| 🧠 **Ciencia de Datos**  | Python                      | Clasificación de transacciones y predicción de perfil financiero. |
-| ☁️ **OCI**　　　　　　　 | Oracle Cloud Infrastructure | Despliegue y/o almacenamiento en la nube.                         |
+| Capa | Tecnología | Función |
+| --- | --- | --- |
+| 🖥️ **Frontend** | HTML5 / CSS3 / JavaScript | Interfaz de usuario interactiva y consumo de API. |
+| ⚙️ **Backend** | Java 21 / Spring Boot 3 / Spring Security (JWT) | Recepción, validación, persistencia y orquestación del flujo. |
+| 🧠 **Ciencia de Datos** | Python 3.11 / FastAPI / Scikit-Learn / Pandas | Inferencia de modelos ML (NLP para transacciones y perfilamiento conductual). |
+| 🛢️ **Base de Datos** | Oracle Autonomous Database (ATP - Always Free) | Almacenamiento relacional seguro en la nube. |
+| ☁️ **Despliegue / OCI** | Oracle Cloud Infrastructure (Ampere A1 / NGINX / Docker) | Orquestación multi-contenedor en la nube OCI. |
 
 ---
 
 ## 📌 Endpoints (Backend)
 
 ### 🔹 Registro de Cuenta
-
 - **Método:** `POST`
 - **Ruta:** `/api/auth/registrar-cuenta`
 - **Autenticación:** Pública (No requiere token)
@@ -52,7 +52,6 @@ El MVP se enfoca en un flujo simple de extremo a extremo:
 ---
 
 ### 🔹 Iniciar Sesión
-
 - **Método:** `POST`
 - **Ruta:** `/api/auth/login`
 - **Autenticación:** Pública (No requiere token)
@@ -60,17 +59,23 @@ El MVP se enfoca en un flujo simple de extremo a extremo:
 
 ---
 
-### 🔹 Clasificación de Transacciones
+### 🔹 Estado del Sistema (Health Check)
+- **Método:** `GET`
+- **Ruta:** `/api/health`
+- **Autenticación:** Pública (No requiere token)
+- **Descripción:** Devuelve el estado en tiempo real del backend y verifica la conectividad en vivo mediante un ping a Oracle Database.
 
+---
+
+### 🔹 Clasificación de Transacciones
 - **Método:** `POST`
 - **Ruta:** `/api/clasificar-transacciones`
 - **Autenticación:** Pública (No requiere token)
-- **Descripción:** Recibe un conjunto de transacciones y devuelve el monto total agrupado por categoría financiera.
+- **Descripción:** Recibe un conjunto de transacciones, las procesa con el modelo NLP de Python y devuelve el monto total agrupado por categoría financiera.
 
 ---
 
 ### 🔹 Análisis Financiero (Puntual)
-
 - **Método:** `POST`
 - **Ruta:** `/api/analisis-financiero`
 - **Autenticación:** Pública (No requiere token)
@@ -79,7 +84,6 @@ El MVP se enfoca en un flujo simple de extremo a extremo:
 ---
 
 ### 🔹 Análisis Financiero Histórico
-
 - **Método:** `POST`
 - **Ruta:** `/api/analisis-financiero/mis-transacciones`
 - **Autenticación:** Protegida (`Authorization: Bearer <token>`)
@@ -88,7 +92,6 @@ El MVP se enfoca en un flujo simple de extremo a extremo:
 ---
 
 ### 🔹 Registrar Transacción
-
 - **Método:** `POST`
 - **Ruta:** `/api/transacciones`
 - **Autenticación:** Protegida (`Authorization: Bearer <token>`)
@@ -97,7 +100,6 @@ El MVP se enfoca en un flujo simple de extremo a extremo:
 ---
 
 ### 🔹 Ver Transacciones (con filtro)
-
 - **Método:** `GET`
 - **Ruta:** `/api/transacciones?desde={fecha}&hasta={fecha}`
 - **Autenticación:** Protegida (`Authorization: Bearer <token>`)
@@ -106,7 +108,6 @@ El MVP se enfoca en un flujo simple de extremo a extremo:
 ---
 
 ### 🔹 Eliminar Transacción
-
 - **Método:** `DELETE`
 - **Ruta:** `/api/transacciones/{id}`
 - **Autenticación:** Protegida (`Authorization: Bearer <token>`)
@@ -114,9 +115,50 @@ El MVP se enfoca en un flujo simple de extremo a extremo:
 
 ---
 
-## 🚀 Guía de ejecución Backend (desde cero)
+## 🧠 Servidor de Ciencia de Datos e Inteligencia Artificial (Python)
 
-A contuación se presentan los pasos para instalar las dependencias necesarias y levantar el servidor Spring Boot desde cero.
+El módulo de Inteligencia Artificial reside en la carpeta `python/servidor_local_py` y está construido con **FastAPI** y **Scikit-Learn**. Expone servicios de inferencia consumidos por el Backend de Spring Boot.
+
+### 🤖 Modelos y Artefactos Incluidos:
+- **`modelo_clasificador_transacciones.pkl` + `tfidf_vectorizer.pkl`**: Modelo de Procesamiento de Lenguaje Natural (NLP) que analiza el texto descriptivo de las transacciones (ej: *"Starbucks Providencia"*) y asigna automáticamente la categoría correspondiente (*Alimentación, Transporte, Entretenimiento, Servicios, etc.*).
+- **`modelo_clasificador_perfiles_rf_volatiles.pkl`**: Modelo de clasificación basado en **Random Forest** que analiza el comportamiento financiero a partir del ingreso mensual, nivel de endeudamiento, frecuencia de ahorro, gasto total y ratio de endeudamiento/ingreso.
+- **`scaler_perfiles_volatiles.pkl` y `label_encoder_frecuencia_ahorro_volatiles.pkl`**: Transformadores de datos para normalización de características continuas y codificación de variables categóricas.
+
+### 🔌 Endpoints del Servidor de IA (Puerto 8000):
+- **`POST /api/clasificacion`**: Recibe `{"descripcion": "..."}` y retorna la categoría asignada.
+- **`POST /api/analisis`**: Recibe indicadores financieros y retorna el perfil predecido (*Saludable, En observación, En riesgo*) con sus probabilidades.
+
+### 📋 Guía de ejecución del Servidor de Python localmente:
+
+#### 1. Prerrequisitos:
+- **Python 3.10+**
+- **pip**
+
+#### 2. Pasos de ejecución:
+```bash
+# 1. Navegar al directorio del servidor de Python
+cd python/servidor_local_py
+
+# 2. Crear y activar entorno virtual (Recomendado)
+python3 -m venv venv
+
+# En Linux / macOS:
+source venv/bin/activate
+
+# En Windows:
+venv\Scripts\activate
+
+# 3. Instalar las dependencias requeridas
+pip install -r requirements.txt
+
+# 4. Iniciar el servidor Uvicorn
+uvicorn main:app --reload --port 8000
+```
+> El servidor estará escuchando en: `http://127.0.0.1:8000`. Puedes explorar la documentación interactiva Swagger en `http://127.0.0.1:8000/docs`.
+
+---
+
+## 🚀 Guía de ejecución Backend (Spring Boot)
 
 ### 📋 Prerrequisitos
 
@@ -125,41 +167,7 @@ A contuación se presentan los pasos para instalar las dependencias necesarias y
 
 ---
 
-### 1. Instalación de Java 21 (JDK 21)
-
-#### En Linux (Ubuntu / Debian):
-
-```bash
-sudo apt update
-sudo apt install openjdk-21-jdk -y
-```
-
-#### En Windows / macOS (descarga directa):
-
-- **Descarga manual:** Descargar e instalar JDK 21 desde [Oracle JDK](https://www.oracle.com/java/technologies/downloads/#java21).
-
-#### Verificar la instalación de Java:
-
-```bash
-java -version
-```
-
-> Se debería ver una salida indicando `openjdk version "21.x.x"` o similar.
-
----
-
-### 2. Clonar el repositorio
-
-Abre una terminal y clona el proyecto:
-
-```bash
-git clone https://github.com/No-Country-simulation/G9-LATAM-Team-59.git
-cd G9-LATAM-Team-59
-```
-
----
-
-### 3. Navegar al directorio del Backend
+### 1. Navegar al directorio del Backend
 
 ```bash
 cd backend
@@ -167,11 +175,7 @@ cd backend
 
 ---
 
-### 4. Otorgar permisos al ejecutable de Gradle (solo Linux/macOS)
-
-El repositorio cuenta con el **Gradle Wrapper (`gradlew`)**, por lo que **no es necesario instalar Gradle globalmente**.
-
-En Linux o macOS, otorga permisos de ejecución al script:
+### 2. Otorgar permisos al ejecutable de Gradle Wrapper (solo Linux/macOS)
 
 ```bash
 chmod +x gradlew
@@ -179,9 +183,7 @@ chmod +x gradlew
 
 ---
 
-### 5. Compilar y ejecutar la aplicación
-
-Se debe ejecutar el servidor Spring Boot utilizando el Gradle Wrapper:
+### 3. Compilar y ejecutar la aplicación
 
 - **En Linux / macOS:**
 
@@ -195,29 +197,13 @@ Se debe ejecutar el servidor Spring Boot utilizando el Gradle Wrapper:
   gradlew.bat bootRun
   ```
 
-_Nota: La primera vez que sea ejecutado, Gradle descargará automáticamente las dependencias del proyecto._
-
----
-
-### 6. Verificación y confirmación
-
-Una vez iniciada la aplicación:
-
-- La API estará escuchando en: `http://localhost:8080`
-- Se creará automáticamente la base de datos SQLite en `backend/bd_hackathon.db`.
-- Puedes verificar el funcionamiento realizando una petición `POST` al endpoint de registro o clasificación:
-
-  ```bash
-  curl -X POST http://localhost:8080/api/auth/login \
-    -H "Content-Type: application/json" \
-    -d '{"email":"test@ejemplo.com","password":"123"}'
-  ```
+> La API del backend estará escuchando en: `http://localhost:8080`.
 
 ---
 
 ## 🌐 Ejecutar el frontend localmente
 
-Para abrir la interfaz web sin depender de abrir el archivo HTML directamente, puedes usar el launcher incluido en la carpeta frontend.
+Para abrir la interfaz web en modo desarrollo sin Docker:
 
 ### Windows
 
@@ -239,18 +225,40 @@ Luego abre en tu navegador:
 ```text
 http://127.0.0.1:3000/html/index.html
 ```
+---
 
-El servidor usa el puerto 3000 y sirve los archivos desde la carpeta frontend, por lo que funciona de forma consistente en Windows, macOS y Linux.
+## 🐳 Despliegue con Docker Compose (Entorno Completo / OCI)
+
+El proyecto incluye la infraestructura necesaria para desplegar los 3 componentes (Frontend NGINX, Backend Spring Boot, Servidor Python IA) junto a la base de datos **Oracle Autonomous Database** mediante **Docker Compose**.
+
+### 📋 Archivos de Configuración:
+
+1. **[.env](.env)**: Configura la URL de conexión a Oracle DB, la contraseña del usuario `ADMIN` y el secreto JWT.
+2. **`oracle_wallet/`**: Carpeta donde se descomprimen los archivos de credenciales y certificados (`tnsnames.ora`, `cwallet.sso`) descargados de OCI.
+3. **[docker-compose.yml](docker-compose.yml)**: Orquestador multi-contenedor.
+
+### 🚀 Pasos para desplegar con Docker Compose:
+
+```bash
+# 1. Colocar los archivos del Wallet de Oracle dentro de /oracle_wallet
+# 2. Configurar las variables en el archivo .env
+
+# 3. Levantar todos los servicios en segundo plano
+docker compose up -d --build
+```
+
+#### Puertos expuestos:
+
+- 🖥️ **Frontend (NGINX + Reverse Proxy)**: `http://localhost:80` (o `http://TU_IP_PUBLICA`)
+- ⚙️ **Backend Spring Boot**: `http://localhost:8080` o `http://localhost:80/api` 
+- 🧠 **Python IA Server**: `http://localhost:8000`
 
 ---
 
 ## 🛠️ Tecnologías utilizadas
 
-- Java + Spring Boot
-- Python (pandas, scikit-learn, etc.)
-- Oracle Cloud Infrastructure (OCI)
-- HTML/CSS/JS (Frontend básico)
-- Maven / Gradle
-- Postman (pruebas de API)
-
----
+- **Backend**: Java 21, Spring Boot 3, Spring Data JPA, Spring Security, JWT (jjwt), Hibernate.
+- **Ciencia de Datos**: Python 3.11, FastAPI, Uvicorn, Scikit-Learn, Pandas, Joblib.
+- **Base de Datos**: Oracle Autonomous Database (ATP), Oracle Wallet, Oracle JDBC Driver (ojdbc11).
+- **Frontend**: HTML5, Vanilla CSS3, JavaScript (ES6+ Modules), Bootstrap 5.
+- **Despliegue & DevOps**: Oracle Cloud Infrastructure (OCI), Docker, Docker Compose, NGINX Reverse Proxy.
